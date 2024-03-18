@@ -1,21 +1,19 @@
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} />
-
-      {/* <Image source={require("../../assets/images/Button_controls.png")} /> */}
-
-      <Text style={styles.getStartedText}>
-        To open previously drawed maze, you must click on the upper icon.
-      </Text>
+      <View style={styles.drawingArea}>
+        <Text style={styles.getStartedText}>
+          To open previously drawed maze, you must click on the upper icon.
+        </Text>
+      </View>
     </View>
   );
 }
 
-// Styles is an object, which has container, title... as properties.
+// Styles is an object, which has container, title, getStartedText... as properties.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -38,4 +36,35 @@ const styles = StyleSheet.create({
     width: "80%",
     backgroundColor: "#f5f6ee",
   },
+
+  drawingArea: {
+    width: "83.5%",
+    height: "80%",
+    borderRadius: 7,
+    backgroundColor: "red",
+    position: "absolute",
+    // This is to give distance between header & nav bar. 
+    top: "5%",
+  },
+
+  // https://www.youtube.com/watch?v=I7POH4acHV8 -> 1:02:20.
+  // btnWrapper: {
+  //   flex: 1,
+  //   alignItems: "center",
+  // },
+  // activeBtn: {
+  //   flex: 1,
+  //   position: "absolute",
+  //   top: -20,
+  //   width: 50,
+  //   height: 50,
+  //   borderRadius: 25,
+  //   backgroundColor: "#edecd8",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  // },
+  // inactiveBtn: {
+  //   flex: 1,
+  //   backgroundColor: "#edecd8",
+  // },
 });
