@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     position: "absolute",
     // This is to give distance between header & nav bar. 
-    top: "5%",
+    top: "5.5%",
   },
 
   // https://www.youtube.com/watch?v=I7POH4acHV8 -> 1:02:20.

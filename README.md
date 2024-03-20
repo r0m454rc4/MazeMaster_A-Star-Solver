@@ -21,7 +21,7 @@ To get started with AI-MazeMaster, follow these steps:
 
 - **Drawing Mazes:** You can draw your own mazes using the drawing tool provided in the app. Simply use your finger or mouse to draw the maze layout on the screen.
 
-- **Opening Mazes:** Alternatively, you can open previously created maze files. The app supports JSON files representing maze configurations.
+- **Opening Mazes:** Alternatively, you can open previously created maze files. The app supports plain txt files representing maze configurations.
 
 ### AI Agent Training
 

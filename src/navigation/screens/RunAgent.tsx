@@ -1,11 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import OpenMazeComponent from "../../components/OpenMaze-compenent";
 
 export default function RunAgentScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab Three</Text>
       <View style={styles.separator} />
+
+      <OpenMazeComponent></OpenMazeComponent>
 
       <Text style={styles.getStartedText}>Execute the agent.</Text>
     </View>
