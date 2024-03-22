@@ -6,7 +6,6 @@ export default function RunAgentScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Tab Three</Text>
       <View style={styles.separator} />
-
       <Text style={styles.getStartedText}>Execute the agent.</Text>
     </View>
   );
