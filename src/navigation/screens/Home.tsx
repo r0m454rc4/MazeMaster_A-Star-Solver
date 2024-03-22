@@ -1,14 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import DrawMazeComponent from "../../components/DrawMaze-compenent";
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <View style={styles.drawingArea}>
-        <Text style={styles.getStartedText}>
-          To open previously drawed maze, you must click on the upper icon.
-        </Text>
-      </View>
+      <DrawMazeComponent />
     </View>
   );
 }
@@ -36,35 +33,13 @@ const styles = StyleSheet.create({
     width: "80%",
     backgroundColor: "#f5f6ee",
   },
-
   drawingArea: {
     width: "83.5%",
     height: "80%",
     borderRadius: 7,
-    backgroundColor: "red",
+    backgroundColor: "orange",
     position: "absolute",
-    // This is to give distance between header & nav bar. 
+    // This is to give distance between header & nav bar.
     top: "5.5%",
   },
-
-  // https://www.youtube.com/watch?v=I7POH4acHV8 -> 1:02:20.
-  // btnWrapper: {
-  //   flex: 1,
-  //   alignItems: "center",
-  // },
-  // activeBtn: {
-  //   flex: 1,
-  //   position: "absolute",
-  //   top: -20,
-  //   width: 50,
-  //   height: 50,
-  //   borderRadius: 25,
-  //   backgroundColor: "#edecd8",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  // },
-  // inactiveBtn: {
-  //   flex: 1,
-  //   backgroundColor: "#edecd8",
-  // },
 });
