@@ -7,11 +7,6 @@ export default function DrawMazeComponent() {
   const pathPan = useRef(new Animated.ValueXY()).current;
   const startPan = useRef(new Animated.ValueXY()).current;
 
-  // console.log(`Blocj: x: ${blockPan.x}, y: ${blockPan.y}`);
-  // console.log(`Goal: x: ${goalPan.x}, y: ${goalPan.y}`);
-  // console.log(`Path: x: ${pathPan.x}, y: ${pathPan.y}`);
-  // console.log(`Start: x: ${startPan.x}, y: ${startPan.y}`);
-
   const blockPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -140,6 +135,12 @@ export default function DrawMazeComponent() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#abd2bf",
+  },
   getStartedText: {
     fontSize: 17,
     lineHeight: 24,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
   },
   drawingArea: {
     width: "83.5%",
-    height: "80%",
+    height: "70%",
     borderRadius: 7,
     backgroundColor: "orange",
     position: "absolute",

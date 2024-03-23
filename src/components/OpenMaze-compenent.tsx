@@ -6,14 +6,12 @@ import { shareAsync } from "expo-sharing";
 // To download files from server.
 // https://www.youtube.com/watch?v=HkIKDqzI3sQ
 
-// To upload files to server:
-// https://www.youtube.com/watch?v=xWul8RJfiEw
-
 export default function OpenMazeComponent() {
   const downloadFromUrl = async () => {
-    let filename = "small.mp4";
+    let filename = "maze0.txt";
+    let localhost = Platform.OS === "android" ? "10.0.2.2" : "127.0.0.1";
     let result = await FileSystem.downloadAsync(
-      `http://techslides.com/demos/sample-videos/${filename}`,
+      `http://${localhost}:8000/src/Mazes/${filename}`,
       FileSystem.documentDirectory + filename
     );
     console.log(result);

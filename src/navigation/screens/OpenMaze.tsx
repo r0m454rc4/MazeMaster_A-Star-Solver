@@ -7,10 +7,7 @@ export default function OpenMazeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Open a previoulsy saved maze</Text>
       <View style={styles.separator} />
-
       <OpenMazeComponent></OpenMazeComponent>
-
-      <Text style={styles.getStartedText}>Open a previoulsy saved maze.</Text>
     </View>
   );
 }

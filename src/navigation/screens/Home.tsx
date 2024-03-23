@@ -1,11 +1,16 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import DrawMazeComponent from "../../components/DrawMaze-compenent";
+import UploadMazeComponent from "../../components/UploadMaze-component";
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <DrawMazeComponent />
+      {/* <DrawMazeComponent /> */}
+
+      <View style={styles.uploadButtons}>
+        <UploadMazeComponent />
+      </View>
     </View>
   );
 }
@@ -28,18 +33,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   separator: {
-    marginVertical: 30,
+    marginVertical: 90,
     height: 1,
     width: "80%",
     backgroundColor: "#f5f6ee",
   },
-  drawingArea: {
-    width: "83.5%",
-    height: "80%",
-    borderRadius: 7,
-    backgroundColor: "orange",
-    position: "absolute",
-    // This is to give distance between header & nav bar.
-    top: "5.5%",
+
+  uploadButtons: {
+    marginTop: "0%",
   },
 });

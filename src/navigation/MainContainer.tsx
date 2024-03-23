@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, StyleSheet } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link } from "expo-router";
 
 import HomeScreen from "./screens/Home";
@@ -35,8 +35,9 @@ export default function MainContainer() {
           tabBarStyle: styles.tabBarStyle,
 
           // Button to redirect the user to OpenMaze screen.
+          // MUST FINISH.
           headerRight: () => (
-            <Link href={""}>
+            <Link href="/screens/OpenMaze" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
@@ -50,6 +51,25 @@ export default function MainContainer() {
           ),
         }}
         component={HomeScreen}
+      />
+
+      <Tab.Screen
+        name="Open maze"
+        options={{
+          tabBarActiveTintColor: "#795ff0",
+          // https://stackoverflow.com/questions/45329620/change-navigation-header-background-color
+          headerStyle: styles.headerStyle,
+          title: "Open maze",
+          // The color of the icon is defined on Colors.ts
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="folder-open" color={color} />
+          ),
+          // Add style to the nav bar.
+          tabBarStyle: styles.tabBarStyle,
+
+          // Button to redirect the user to OpenMaze screen.
+        }}
+        component={OpenMazeScreen}
       />
 
       <Tab.Screen
