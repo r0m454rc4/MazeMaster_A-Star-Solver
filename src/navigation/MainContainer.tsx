@@ -1,9 +1,11 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Pressable, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Link } from "expo-router";
 
 import HomeScreen from "./screens/Home";
+import OpenMazeScreen from "./screens/OpenMaze";
 import TrainAgentScreen from "./screens/TrainAgent";
 import RunAgentScreen from "./screens/RunAgent";
 
@@ -21,18 +23,53 @@ export default function MainContainer() {
   return (
     <Tab.Navigator>
       <Tab.Screen
+        name="Draw maze"
+        options={{
+          tabBarActiveTintColor: "#795ff0",
+          // https://stackoverflow.com/questions/45329620/change-navigation-header-background-color
+          headerStyle: styles.headerStyle,
+          title: "Draw maze",
+          // The color of the icon is defined on Colors.ts
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          // Add style to the nav bar.
+          tabBarStyle: styles.tabBarStyle,
+
+          // Button to redirect the user to OpenMaze screen.
+          // MUST FINISH.
+          headerRight: () => (
+            <Link href="/screens/OpenMaze" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="folder-open"
+                    size={24}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+        component={HomeScreen}
+      />
+
+      <Tab.Screen
         name="Open maze"
         options={{
           tabBarActiveTintColor: "#795ff0",
           // https://stackoverflow.com/questions/45329620/change-navigation-header-background-color
           headerStyle: styles.headerStyle,
-          title: "Open or draw maze",
+          title: "Open maze",
           // The color of the icon is defined on Colors.ts
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="folder-open" color={color} />
+          ),
           // Add style to the nav bar.
           tabBarStyle: styles.tabBarStyle,
+
+          // Button to redirect the user to OpenMaze screen.
         }}
-        component={HomeScreen}
+        component={OpenMazeScreen}
       />
 
       <Tab.Screen
