@@ -1,5 +1,11 @@
 import React, { useRef } from "react";
-import { StyleSheet, View, Animated, PanResponder } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Animated,
+  PanResponder,
+  Dimensions,
+} from "react-native";
 
 export default function DrawMazeComponent() {
   const blockPan = useRef(new Animated.ValueXY()).current;
@@ -147,8 +153,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   drawingArea: {
-    width: "83.5%",
-    height: "70%",
+    // width: "83.5%",
+    width: Dimensions.get("screen").width / 1.1,
+    height: Dimensions.get("screen").height / 1.65,
     borderRadius: 7,
     backgroundColor: "orange",
     position: "absolute",
@@ -160,63 +167,32 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
-  // Style buttons.
   block: {
     width: 30,
     height: 30,
-    top: "40%",
+    top: Dimensions.get("screen").height / 4,
     left: "-5%",
     backgroundColor: "red",
   },
   goal: {
     width: 30,
     height: 30,
-    top: "40%",
+    top: Dimensions.get("screen").height / 4,
     left: "-2%",
     backgroundColor: "blue",
   },
   path: {
     width: 30,
     height: 30,
-    top: "40%",
+    top: Dimensions.get("screen").height / 4,
     left: "1%",
     backgroundColor: "green",
   },
   start: {
     width: 30,
     height: 30,
-    top: "40%",
+    top: Dimensions.get("screen").height / 4,
     left: "4%",
     backgroundColor: "white",
   },
-
-  // Style buttons - IPhone.
-  // block: {
-  //   width: 30,
-  //   height: 30,
-  //   top: "70%",
-  //   left: "-5%",
-  //   backgroundColor: "red",
-  // },
-  // goal: {
-  //   width: 30,
-  //   height: 30,
-  //   top: "70%",
-  //   left: "-2%",
-  //   backgroundColor: "blue",
-  // },
-  // path: {
-  //   width: 30,
-  //   height: 30,
-  //   top: "70%",
-  //   left: "1%",
-  //   backgroundColor: "green",
-  // },
-  // start: {
-  //   width: 30,
-  //   height: 30,
-  //   top: "70%",
-  //   left: "4%",
-  //   backgroundColor: "white",
-  // },
 });

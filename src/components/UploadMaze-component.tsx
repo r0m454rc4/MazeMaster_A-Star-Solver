@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Text,
   FlatList,
+  Dimensions
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -15,7 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 const imgDir = FileSystem.documentDirectory + "images/";
 // IP address from the computer.
-const ipAddress = "192.168.1.124";
+const ipAddress = "192.168.1.125";
 
 const ensureDirExists = async () => {
   const dirInfo = await FileSystem.getInfoAsync(imgDir);
@@ -48,8 +49,8 @@ export default function UploadMazeComponent() {
     const options: ImagePicker.ImagePickerOptions = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.75,
+      aspect: [3, 3],
+      quality: 0.35,
     };
 
     if (useLibrary) {
@@ -92,43 +93,58 @@ export default function UploadMazeComponent() {
 
   // Render image list item.
   const renderItem = ({ item }: { item: any }) => {
-    const filename = item.split("/").pop();
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          margin: 1,
-          alignItems: "center",
-          gap: 5,
-        }}
-      >
-        <Image style={{ width: 80, height: 80 }} source={{ uri: item }} />
-        <Text style={{ flex: 1 }}>{filename}</Text>
-        <Ionicons.Button
-          name="cloud-upload"
-          onPress={() => uploadImage(item)}
-        />
-        <Ionicons.Button name="trash" onPress={() => deleteImage(item)} />
+      <View>
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: 17,
+            fontWeight: "500",
+          }}
+        >
+          Upload maze:
+        </Text>
+
+        {/* Style upload and delete buttons. */}
+        <View
+          style={{
+            flexDirection: "row",
+            margin: 1,
+            alignItems: "center",
+            gap: 15,
+          }}
+        >
+          {/* <Image style={{ width: 80, height: 80 }} source={{ uri: item }} /> */}
+
+          <Ionicons.Button
+            name="cloud-upload"
+            onPress={() => uploadImage(item)}
+            style={{ backgroundColor: "#33b249" }}
+          />
+          <Ionicons.Button
+            name="trash"
+            onPress={() => deleteImage(item)}
+            style={{ backgroundColor: "#ED0800" }}
+          />
+        </View>
       </View>
     );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, gap: 20 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View
+        // Style save maze button.
         style={{
           flexDirection: "row",
           justifyContent: "space-evenly",
-          marginVertical: 20,
+          marginVertical: Dimensions.get("screen").height / 35,
+          top: 20,
         }}
       >
-        <Button title="Photo Library" onPress={() => selectImage(true)} />
-        <Button title="Capture Image" onPress={() => selectImage(false)} />
+        <Button title="Save maze" onPress={() => selectImage(true)} />
       </View>
 
-      <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "500" }}>
-        Upload maze:
-      </Text>
       <FlatList data={images} renderItem={renderItem} />
 
       {uploading && (

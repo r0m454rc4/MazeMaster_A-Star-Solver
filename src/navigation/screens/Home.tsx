@@ -6,7 +6,7 @@ import UploadMazeComponent from "../../components/UploadMaze-component";
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      {/* <DrawMazeComponent /> */}
+      <DrawMazeComponent />
 
       <View style={styles.uploadButtons}>
         <UploadMazeComponent />
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
   },
 
   uploadButtons: {
-    marginTop: "0%",
+    marginTop: "125%",
   },
 });
