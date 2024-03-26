@@ -6,6 +6,7 @@ import {
   PanResponder,
   Dimensions,
 } from "react-native";
+import TableWithCells from "./CanvasTable-component";
 
 export default function DrawMazeComponent() {
   const blockPan = useRef(new Animated.ValueXY()).current;
@@ -13,15 +14,28 @@ export default function DrawMazeComponent() {
   const pathPan = useRef(new Animated.ValueXY()).current;
   const startPan = useRef(new Animated.ValueXY()).current;
 
+  // https://stackoverflow.com/questions/46188512/reactnative-panresponder-limit-x-position
+  const maxLatDist = Dimensions.get("screen").width / 1.1;
+  const maxVertDist = Dimensions.get("screen").height / 1.65;
+
   const blockPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [null, { dx: blockPan.x, dy: blockPan.y }],
-        {
-          useNativeDriver: false,
+      onPanResponderMove: (event, gestureState) => {
+        if (gestureState.dx <= maxLatDist && gestureState.dy <= maxVertDist) {
+          console.log(
+            `Block, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
+          );
+
+          return Animated.event([null, { dx: blockPan.x, dy: blockPan.y }], {
+            useNativeDriver: false,
+          })(
+            // Return parameters.
+            event,
+            gestureState
+          );
         }
-      ),
+      },
 
       // This is to return to the initial position after releasing.
       onPanResponderRelease: () => {
@@ -36,12 +50,17 @@ export default function DrawMazeComponent() {
   const goalPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [null, { dx: goalPan.x, dy: goalPan.y }],
-        {
+      onPanResponderMove: (event, gestureState) => {
+        console.log(`Goal, x: ${gestureState.moveX}, y: ${gestureState.moveY}`);
+
+        return Animated.event([null, { dx: goalPan.x, dy: goalPan.y }], {
           useNativeDriver: false,
-        }
-      ),
+        })(
+          // Return parameters.
+          event,
+          gestureState
+        );
+      },
 
       onPanResponderRelease: () => {
         Animated.spring(goalPan, {
@@ -55,12 +74,17 @@ export default function DrawMazeComponent() {
   const pathPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [null, { dx: pathPan.x, dy: pathPan.y }],
-        {
+      onPanResponderMove: (event, gestureState) => {
+        console.log(`Path, x: ${gestureState.moveX}, y: ${gestureState.moveY}`);
+
+        return Animated.event([null, { dx: pathPan.x, dy: pathPan.y }], {
           useNativeDriver: false,
-        }
-      ),
+        })(
+          // Return parameters.
+          event,
+          gestureState
+        );
+      },
 
       onPanResponderRelease: () => {
         Animated.spring(pathPan, {
@@ -74,12 +98,19 @@ export default function DrawMazeComponent() {
   const startPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [null, { dx: startPan.x, dy: startPan.y }],
-        {
+      onPanResponderMove: (event, gestureState) => {
+        console.log(
+          `Start, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
+        );
+
+        return Animated.event([null, { dx: startPan.x, dy: startPan.y }], {
           useNativeDriver: false,
-        }
-      ),
+        })(
+          // Return parameters.
+          event,
+          gestureState
+        );
+      },
 
       onPanResponderRelease: () => {
         Animated.spring(startPan, {
@@ -92,6 +123,10 @@ export default function DrawMazeComponent() {
 
   return (
     <View style={styles.drawingArea}>
+      <View style={styles.drawingArea}>
+        <TableWithCells />
+      </View>
+
       <Animated.Image
         // Import image.
         source={require("../../assets/images/Block.png")}
@@ -168,29 +203,29 @@ const styles = StyleSheet.create({
   },
 
   block: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "-5%",
     backgroundColor: "red",
   },
   goal: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "-2%",
     backgroundColor: "blue",
   },
   path: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "1%",
     backgroundColor: "green",
   },
   start: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "4%",
     backgroundColor: "white",
