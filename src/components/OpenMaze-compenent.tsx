@@ -6,13 +6,13 @@ import { shareAsync } from "expo-sharing";
 // To download files from server.
 // https://www.youtube.com/watch?v=HkIKDqzI3sQ
 
-const ipAddress = "192.168.1.125";
+const ipAddress = "192.168.1.135";
 
 export default function OpenMazeComponent() {
   const downloadFromUrl = async () => {
     let filename = "maze0.txt";
     let result = await FileSystem.downloadAsync(
-      `http://${ipAddress}:8000/src/Mazes/${filename}`,
+      `http://${ipAddress}:8000/Mazes/${filename}`,
       FileSystem.documentDirectory + filename
     );
     console.log(result);
