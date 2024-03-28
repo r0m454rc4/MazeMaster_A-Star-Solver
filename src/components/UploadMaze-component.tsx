@@ -15,7 +15,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 const imgDir = FileSystem.documentDirectory + "images/";
 // IP address from the computer.
-const ipAddress = "192.168.1.129";
+const ipAddress = "192.168.1.141";
 
 const ensureDirExists = async () => {
   const dirInfo = await FileSystem.getInfoAsync(imgDir);
@@ -82,6 +82,7 @@ export default function UploadMazeComponent() {
     });
 
     setUploading(false);
+    alert("Maze uploaded :)")
   };
 
   // Delete maze from file system.
