@@ -12,23 +12,30 @@ import {
 import * as FileSystem from "expo-file-system";
 import { shareAsync } from "expo-sharing";
 
-// To download files from server.
-// https://www.youtube.com/watch?v=HkIKDqzI3sQ
-
 export default function OpenMazeComponent() {
   const ipAddress = "192.168.1.141";
 
   const downloadFromUrl = async (filename: string) => {
-    let result = await FileSystem.downloadAsync(
-      `http://${ipAddress}:8000/Mazes/${filename}`,
-      FileSystem.documentDirectory + filename
-    );
-    console.log(result);
+    try {
+      let response = await fetch(`http://${ipAddress}:8000/Mazes/${filename}`);
 
-    save(result.uri, filename, result.headers["Content-Type"]);
+      if (response.status == 200) {
+        let res = await FileSystem.downloadAsync(
+          `http://${ipAddress}:8000/Mazes/${filename}`,
+          FileSystem.documentDirectory + filename
+        );
+        console.log(res);
 
-    // Close the modal (which I use to open the maze.)
-    setModalVisible(!modalVisible);
+        save(res.uri, filename, res.headers["Content-Type"]);
+
+        // Close the modal (which I use to open the maze.)
+        setModalVisible(!modalVisible);
+      }
+    } catch (error) {
+      alert(`PHP server is disabled:", ${error}`);
+      setModalVisible(!modalVisible);
+      return;
+    }
   };
 
   const save = async (url: string, filename: string, mimetype: string) => {
@@ -88,7 +95,7 @@ export default function OpenMazeComponent() {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Maze to open:</Text>
             <TextInput
-              placeholder="mazeName"
+              placeholder="maze00"
               // While I type, I update the name of the maze.
               onChangeText={(maze) => setMazeName(maze)}
             />

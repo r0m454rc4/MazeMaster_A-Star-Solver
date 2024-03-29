@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Text,
   FlatList,
+  RootTagContext,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -71,18 +72,23 @@ export default function UploadMazeComponent() {
     setImages([...images, dest]);
   };
 
-  // Upload maze to server
+  // Upload maze to server.
   const uploadMaze = async (uri: string) => {
-    setUploading(true);
+    try {
+      setUploading(true);
 
-    await FileSystem.uploadAsync(`http://${ipAddress}:8000/upload.php`, uri, {
-      httpMethod: "POST",
-      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-      fieldName: "file",
-    });
+      await FileSystem.uploadAsync(`http://${ipAddress}:8000/upload.php`, uri, {
+        httpMethod: "POST",
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: "file",
+      });
 
-    setUploading(false);
-    alert("Maze uploaded :)")
+      setUploading(false);
+      alert("Maze uploaded :)");
+    } catch (error) {
+      alert(`PHP server is disabled:", ${error}`);
+      return;
+    }
   };
 
   // Delete maze from file system.
