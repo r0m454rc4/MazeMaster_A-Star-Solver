@@ -1,6 +1,6 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-$target_path = "../src/Mazes/";
+$target_path = "./Mazes";
 
 $target_path = $target_path . basename($_FILES['file']['name']);
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+
 import DrawMazeComponent from "../../components/DrawMaze-compenent";
 import UploadMazeComponent from "../../components/UploadMaze-component";
 

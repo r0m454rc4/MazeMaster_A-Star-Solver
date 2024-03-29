@@ -1,5 +1,14 @@
-import React from "react";
-import { Button, Platform, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  Pressable,
+  View,
+  Platform,
+  TextInput,
+} from "react-native";
 import * as FileSystem from "expo-file-system";
 import { shareAsync } from "expo-sharing";
 
@@ -7,16 +16,19 @@ import { shareAsync } from "expo-sharing";
 // https://www.youtube.com/watch?v=HkIKDqzI3sQ
 
 export default function OpenMazeComponent() {
-  const downloadFromUrl = async () => {
-    let filename = "maze0.txt";
-    let localhost = Platform.OS === "android" ? "10.0.2.2" : "127.0.0.1";
+  const ipAddress = "192.168.1.141";
+
+  const downloadFromUrl = async (filename: string) => {
     let result = await FileSystem.downloadAsync(
-      `http://${localhost}:8000/src/Mazes/${filename}`,
+      `http://${ipAddress}:8000/Mazes/${filename}`,
       FileSystem.documentDirectory + filename
     );
     console.log(result);
 
     save(result.uri, filename, result.headers["Content-Type"]);
+
+    // Close the modal (which I use to open the maze.)
+    setModalVisible(!modalVisible);
   };
 
   const save = async (url: string, filename: string, mimetype: string) => {
@@ -52,9 +64,94 @@ export default function OpenMazeComponent() {
     }
   };
 
+  // https://stackoverflow.com/questions/60091873/how-to-get-values-from-textinput
+  // https://reactnative.dev/docs/modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mazeName, setMazeName] = useState("");
+
+  let sendMazeName = (mazeName: string) => {
+    return `${mazeName}.txt`;
+  };
+
   return (
     <View>
-      <Button title="Download from url" onPress={downloadFromUrl}></Button>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Maze to open:</Text>
+            <TextInput
+              placeholder="mazeName"
+              // While I type, I update the name of the maze.
+              onChangeText={(maze) => setMazeName(maze)}
+            />
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => downloadFromUrl(sendMazeName(mazeName))}
+            >
+              <Text style={styles.textStyle}>Open maze</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      <Pressable
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.textStyle}>Open maze</Text>
+      </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    top: 10,
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+});

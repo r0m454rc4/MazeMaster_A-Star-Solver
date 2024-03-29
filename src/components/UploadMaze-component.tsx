@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   Text,
   FlatList,
-  Dimensions
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -16,7 +15,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 const imgDir = FileSystem.documentDirectory + "images/";
 // IP address from the computer.
-const ipAddress = "192.168.1.125";
+const ipAddress = "192.168.1.141";
 
 const ensureDirExists = async () => {
   const dirInfo = await FileSystem.getInfoAsync(imgDir);
@@ -72,8 +71,8 @@ export default function UploadMazeComponent() {
     setImages([...images, dest]);
   };
 
-  // Upload image to server
-  const uploadImage = async (uri: string) => {
+  // Upload maze to server
+  const uploadMaze = async (uri: string) => {
     setUploading(true);
 
     await FileSystem.uploadAsync(`http://${ipAddress}:8000/upload.php`, uri, {
@@ -83,10 +82,11 @@ export default function UploadMazeComponent() {
     });
 
     setUploading(false);
+    alert("Maze uploaded :)")
   };
 
-  // Delete image from file system.
-  const deleteImage = async (uri: string) => {
+  // Delete maze from file system.
+  const deleteMaze = async (uri: string) => {
     await FileSystem.deleteAsync(uri);
     setImages(images.filter((i) => i !== uri));
   };
@@ -118,12 +118,12 @@ export default function UploadMazeComponent() {
 
           <Ionicons.Button
             name="cloud-upload"
-            onPress={() => uploadImage(item)}
+            onPress={() => uploadMaze(item)}
             style={{ backgroundColor: "#33b249" }}
           />
           <Ionicons.Button
             name="trash"
-            onPress={() => deleteImage(item)}
+            onPress={() => deleteMaze(item)}
             style={{ backgroundColor: "#ED0800" }}
           />
         </View>
@@ -138,8 +138,8 @@ export default function UploadMazeComponent() {
         style={{
           flexDirection: "row",
           justifyContent: "space-evenly",
-          marginVertical: Dimensions.get("screen").height / 35,
-          top: 20,
+          marginVertical: 27,
+          top: 30,
         }}
       >
         <Button title="Save maze" onPress={() => selectImage(true)} />

@@ -1,15 +1,18 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import OpenMazeComponent from "../../components/OpenMaze-compenent";
 
 export default function TrainAgentScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} />
-
       <Text style={styles.getStartedText}>
         Train the agent to solve the maze.
       </Text>
+
+      <View style={styles.separator} />
+
+      <OpenMazeComponent />
     </View>
   );
 }
