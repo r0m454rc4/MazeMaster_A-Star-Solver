@@ -8,7 +8,6 @@ import {
   SafeAreaView,
   Text,
   FlatList,
-  RootTagContext,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -17,6 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 const imgDir = FileSystem.documentDirectory + "images/";
 // IP address from the computer.
 const ipAddress = "192.168.1.141";
+const controller = new AbortController();
 
 const ensureDirExists = async () => {
   const dirInfo = await FileSystem.getInfoAsync(imgDir);
@@ -75,16 +75,26 @@ export default function UploadMazeComponent() {
   // Upload maze to server.
   const uploadMaze = async (uri: string) => {
     try {
-      setUploading(true);
-
-      await FileSystem.uploadAsync(`http://${ipAddress}:8000/upload.php`, uri, {
-        httpMethod: "POST",
-        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-        fieldName: "file",
+      let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
+        signal: controller.signal,
       });
 
-      setUploading(false);
-      alert("Maze uploaded :)");
+      if (response.status == 200) {
+        setUploading(true);
+
+        await FileSystem.uploadAsync(
+          `http://${ipAddress}:8000/upload.php`,
+          uri,
+          {
+            httpMethod: "POST",
+            uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+            fieldName: "file",
+          }
+        );
+
+        setUploading(false);
+        alert("Maze uploaded :)");
+      }
     } catch (error) {
       alert(`PHP server is disabled:", ${error}`);
       return;

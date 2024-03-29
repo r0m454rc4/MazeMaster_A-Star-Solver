@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 const RedCube = () => {
-  const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current; // Initial position set at (0, 0)
+  const pan = useRef(new Animated.ValueXY()).current;
   const [draggedCells, setDraggedCells] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -61,14 +61,20 @@ const RedCube = () => {
 
   const renderCells = () => {
     const cells = [];
+
     for (let row = 0; row < 11; row++) {
       for (let col = 0; col < 9; col++) {
         const cellKey = `${row}-${col}`;
+
         cells.push(
-          <View
-            key={cellKey}
-            style={[styles.cell, draggedCells[cellKey] && styles.blueCube]}
-          />
+          <View key={cellKey} style={styles.cell}>
+            {draggedCells[cellKey] && (
+              <Animated.Image
+                source={require("../../assets/images/Block.png")}
+                style={styles.block}
+              />
+            )}
+          </View>
         );
       }
     }
@@ -107,8 +113,9 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderWidth: 1,
   },
-  blueCube: {
-    backgroundColor: "blue",
+  block: {
+    width: 35,
+    height: 35,
   },
   redCube: {
     // marginTop: 20,

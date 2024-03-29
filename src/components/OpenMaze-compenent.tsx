@@ -14,10 +14,13 @@ import { shareAsync } from "expo-sharing";
 
 export default function OpenMazeComponent() {
   const ipAddress = "192.168.1.141";
+  const controller = new AbortController();
 
   const downloadFromUrl = async (filename: string) => {
     try {
-      let response = await fetch(`http://${ipAddress}:8000/Mazes/${filename}`);
+      let response = await fetch(`http://${ipAddress}:8000/Mazes/${filename}`, {
+        signal: controller.signal,
+      });
 
       if (response.status == 200) {
         let res = await FileSystem.downloadAsync(

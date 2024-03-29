@@ -207,40 +207,10 @@ export default function DrawMazeComponent() {
       const cellViews = [];
 
       for (let j = 0; j < columns; j++) {
-        cellViews.push(
-          <View key={`cell_${j}`} style={styles.cell}>
-            {renderImageForCell(j, columns)}
-          </View>
-        );
+        cellViews.push(<View key={`cell_${j}`} style={styles.cell}></View>);
       }
 
       return cellViews;
-    };
-
-    const renderImageForCell = (rowIndex: number, colIndex: number) => {
-      const cellImages = [];
-
-      // Check if the cell matches the position of any of the images
-      if (rowIndex === 1 && colIndex === 1) {
-        cellImages.push(
-          <Animated.Image
-            key={`block`}
-            source={require("../../assets/images/Block.png")}
-            style={[
-              styles.block,
-              {
-                transform: [
-                  { translateX: blockPan.x },
-                  { translateY: blockPan.y },
-                ],
-              },
-            ]}
-            {...blockPanResponder.panHandlers}
-          />
-        );
-      }
-
-      return cellImages;
     };
 
     return <View style={styles.table}>{renderRows()}</View>;
