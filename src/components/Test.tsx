@@ -59,11 +59,12 @@ const RedCube = () => {
     })
   ).current as PanResponderInstance;
 
-  const renderCells = () => {
+  const Table = () => {
     const cells = [];
 
     for (let row = 0; row < 11; row++) {
       for (let col = 0; col < 9; col++) {
+        // This cell key must be the same as the one in line 45.
         const cellKey = `${row}-${col}`;
 
         cells.push(
@@ -78,12 +79,13 @@ const RedCube = () => {
         );
       }
     }
+
     return cells;
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.table}>{renderCells()}</View>
+      <View style={styles.table}>{Table()}</View>
       {/* Render red cube */}
       <Animated.View
         {...panResponder.panHandlers}
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
     height: 35,
   },
   redCube: {
-    // marginTop: 20,
+    marginTop: 20,
     width: 35,
     height: 35,
     backgroundColor: "red",
