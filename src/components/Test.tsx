@@ -21,17 +21,17 @@ const RedCube = () => {
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gesture) => {
-        // Calculate row and col based on gesture position relative to the table
-        const col = Math.floor((gesture.moveX - 135) / 35); // Assuming cell width is 35
-        const row = Math.floor((gesture.moveY - 135) / 35); // Assuming cell height is 35
+        // Col is the colum index of the cell.
+        const col = Math.floor((gesture.moveX - 265) / 35); // Assuming cell width is 35
+        const row = Math.floor((gesture.moveY - 265) / 35); // Assuming cell height is 35
 
         // Calculate the absolute position of the red cube relative to the table
         const redCubeX = gesture.moveX - gesture.dx;
         const redCubeY = gesture.moveY - gesture.dy;
 
         // Adjust row and col based on the position of the red cube
-        const adjustedCol = Math.floor((redCubeX - 135) / 35);
-        const adjustedRow = Math.floor((redCubeY - 135) / 35);
+        const adjustedCol = Math.floor((redCubeX - 265) / 35);
+        const adjustedRow = Math.floor((redCubeY - 265) / 35);
 
         setHoveredCell({ row: adjustedRow, col: adjustedCol });
 

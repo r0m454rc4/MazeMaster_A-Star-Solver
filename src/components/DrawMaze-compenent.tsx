@@ -20,7 +20,7 @@ export default function DrawMazeComponent() {
   const maxLeftDistPath = -195,
     maxRigthDistPath = Dimensions.get("screen").width / 3.05;
   const maxLeftDistStart = -255,
-    maxRightDistStart = Dimensions.get("screen").width / 5.75;
+    maxRightDistStart = Dimensions.get("screen").width / 5.3;
 
   const maxBottomtDist = Dimensions.get("screen").height / 20,
     maxToptDist = -455;
@@ -44,22 +44,14 @@ export default function DrawMazeComponent() {
         //   gestureState.dy <= maxBottomtDist
         // ) {
 
-        console.log(
-          `Block, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
-        );
+        // console.log(
+        //   `Block, x: ${gestureState.moveX} dx:(${gestureState.dx}) res:(${
+        //     gestureState.moveX - gestureState.dx
+        //   }), y: ${gestureState.moveY}`
+        // );
         // Calculate row and col based on gesture position relative to the table
-        const blockCol = Math.floor((gestureState.moveX - 15) / 35); // Assuming cell width is 35
-        const blockRow = Math.floor((gestureState.moveY - 15) / 35); // Assuming cell height is 35
-
-        // Calculate the absolute position of the red cube relative to the table
-        const blockX = gestureState.moveX - gestureState.dx;
-        const blockY = gestureState.moveY - gestureState.dy;
-
-        // Adjust row and col based on the position of the red cube
-        const adjustedCol = Math.floor((blockX - 15) / 35);
-        const adjustedRow = Math.floor((blockY - 15) / 35);
-
-        setHoveredCell({ row: adjustedRow, col: adjustedCol });
+        const blockCol = Math.floor((gestureState.moveX - 65) / 35);
+        const blockRow = Math.floor((gestureState.moveY - 150) / 35);
 
         // Update the position of the red cube
         blockPan.setValue({
@@ -114,26 +106,26 @@ export default function DrawMazeComponent() {
         console.log(`Goal, x: ${gestureState.moveX}, y: ${gestureState.moveY}`);
 
         // Calculate row and col based on gesture position relative to the table
-        const goalCol = Math.floor((gestureState.moveX - 15) / 35); // Assuming cell width is 35
-        const goalRow = Math.floor((gestureState.moveY - 15) / 35); // Assuming cell height is 35
+        const goalCol = Math.floor((gestureState.moveX - 15) / 35);
+        const goalRow = Math.floor((gestureState.moveY - 15) / 35);
 
-        // Calculate the absolute position of the red cube relative to the table
+        // Calculate the absolute position of the goal relative to the table
         const goalX = gestureState.moveX - gestureState.dx;
         const goalY = gestureState.moveY - gestureState.dy;
 
-        // Adjust row and col based on the position of the red cube
+        // Adjust row and col based on the position of the goal.
         const adjustedCol = Math.floor((goalX - 15) / 35);
         const adjustedRow = Math.floor((goalY - 15) / 35);
 
         setHoveredCell({ row: adjustedRow, col: adjustedCol });
 
-        // Update the position of the red cube
+        // Update the position of the goal.
         goalPan.setValue({
           x: gestureState.dx,
           y: gestureState.dy,
         });
 
-        // Update the list of dragged cells
+        // Update the list of dragged cells.
         const goalCellKey = `${goalRow}-${goalCol}`;
         setDraggedCells((prevDraggedCells) => ({
           ...prevDraggedCells,
@@ -142,11 +134,7 @@ export default function DrawMazeComponent() {
 
         return Animated.event([null, { dx: goalPan.x, dy: goalPan.y }], {
           useNativeDriver: false,
-        })(
-          // Return parameters.
-          event,
-          gestureState
-        );
+        })(event, gestureState);
         // }
       },
 
@@ -178,27 +166,22 @@ export default function DrawMazeComponent() {
         // ) {
         console.log(`Path, x: ${gestureState.moveX}, y: ${gestureState.moveY}`);
 
-        // Calculate row and col based on gesture position relative to the table
-        const pathCol = Math.floor((gestureState.moveX - 15) / 35); // Assuming cell width is 35
-        const pathRow = Math.floor((gestureState.moveY - 15) / 35); // Assuming cell height is 35
+        const pathCol = Math.floor((gestureState.moveX - 15) / 35);
+        const pathRow = Math.floor((gestureState.moveY - 15) / 35);
 
-        // Calculate the absolute position of the red cube relative to the table
         const pathX = gestureState.moveX - gestureState.dx;
         const pathY = gestureState.moveY - gestureState.dy;
 
-        // Adjust row and col based on the position of the red cube
         const adjustedCol = Math.floor((pathX - 15) / 35);
         const adjustedRow = Math.floor((pathY - 15) / 35);
 
         setHoveredCell({ row: adjustedRow, col: adjustedCol });
 
-        // Update the position of the red cube
         pathPan.setValue({
           x: gestureState.dx,
           y: gestureState.dy,
         });
 
-        // Update the list of dragged cells
         const pathCellKey = `${pathRow}-${pathCol}`;
         setDraggedCells((prevDraggedCells) => ({
           ...prevDraggedCells,
@@ -207,11 +190,7 @@ export default function DrawMazeComponent() {
 
         return Animated.event([null, { dx: pathPan.x, dy: pathPan.y }], {
           useNativeDriver: false,
-        })(
-          // Return parameters.
-          event,
-          gestureState
-        );
+        })(event, gestureState);
         // }
       },
 
@@ -245,27 +224,22 @@ export default function DrawMazeComponent() {
           `Start, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
         );
 
-        // Calculate row and col based on gesture position relative to the table
-        const startCol = Math.floor((gestureState.moveX - 15) / 35); // Assuming cell width is 35
-        const startRow = Math.floor((gestureState.moveY - 15) / 35); // Assuming cell height is 35
+        const startCol = Math.floor((gestureState.moveX - 15) / 35);
+        const startRow = Math.floor((gestureState.moveY - 15) / 35);
 
-        // Calculate the absolute position of the red cube relative to the table
         const startX = gestureState.moveX - gestureState.dx;
         const startY = gestureState.moveY - gestureState.dy;
 
-        // Adjust row and col based on the position of the red cube
         const adjustedCol = Math.floor((startX - 15) / 35);
         const adjustedRow = Math.floor((startY - 15) / 35);
 
         setHoveredCell({ row: adjustedRow, col: adjustedCol });
 
-        // Update the position of the red cube
         startPan.setValue({
           x: gestureState.dx,
           y: gestureState.dy,
         });
 
-        // Update the list of dragged cells
         const startCellKey = `${startRow}-${startCol}`;
         setDraggedCells((prevDraggedCells) => ({
           ...prevDraggedCells,
@@ -274,11 +248,7 @@ export default function DrawMazeComponent() {
 
         return Animated.event([null, { dx: startPan.x, dy: startPan.y }], {
           useNativeDriver: false,
-        })(
-          // Return parameters.
-          event,
-          gestureState
-        );
+        })(event, gestureState);
         // }
       },
 
@@ -463,6 +433,7 @@ const styles = StyleSheet.create({
   },
 
   table: {
+    top: -40,
     flexDirection: "row",
     flexWrap: "wrap",
     width: 330,
