@@ -16,6 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 const imgDir = FileSystem.documentDirectory + "images/";
 // IP address from the computer.
 const ipAddress = "192.168.1.141";
+const controller = new AbortController();
 
 const ensureDirExists = async () => {
   const dirInfo = await FileSystem.getInfoAsync(imgDir);
@@ -71,18 +72,33 @@ export default function UploadMazeComponent() {
     setImages([...images, dest]);
   };
 
-  // Upload maze to server
+  // Upload maze to server.
   const uploadMaze = async (uri: string) => {
-    setUploading(true);
+    try {
+      let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
+        signal: controller.signal,
+      });
 
-    await FileSystem.uploadAsync(`http://${ipAddress}:8000/upload.php`, uri, {
-      httpMethod: "POST",
-      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-      fieldName: "file",
-    });
+      if (response.status == 200) {
+        setUploading(true);
 
-    setUploading(false);
-    alert("Maze uploaded :)")
+        await FileSystem.uploadAsync(
+          `http://${ipAddress}:8000/upload.php`,
+          uri,
+          {
+            httpMethod: "POST",
+            uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+            fieldName: "file",
+          }
+        );
+
+        setUploading(false);
+        alert("Maze uploaded :)");
+      }
+    } catch (error) {
+      alert(`PHP server is disabled:", ${error}`);
+      return;
+    }
   };
 
   // Delete maze from file system.
