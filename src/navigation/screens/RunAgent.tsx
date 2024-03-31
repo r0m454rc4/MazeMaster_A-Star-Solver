@@ -1,16 +1,12 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Test from "../../components/Test";
 
 export default function RunAgentScreen() {
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Tab Three</Text>
+      <Text style={styles.title}>Tab Three</Text>
       <View style={styles.separator} />
       <Text style={styles.getStartedText}>Execute the agent.</Text>
-       */}
-
-      <Test />
     </View>
   );
 }
