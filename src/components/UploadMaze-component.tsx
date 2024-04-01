@@ -1,99 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Button,
-  Image,
-  View,
+  Alert,
+  Modal,
   StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
   Text,
-  FlatList,
+  Pressable,
+  View,
+  TextInput,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import Ionicons from "@expo/vector-icons/Ionicons";
-
-const imgDir = FileSystem.documentDirectory + "images/";
-// IP address from the computer.
-const ipAddress = "192.168.1.141";
-const controller = new AbortController();
-
-const ensureDirExists = async () => {
-  const dirInfo = await FileSystem.getInfoAsync(imgDir);
-  if (!dirInfo.exists) {
-    await FileSystem.makeDirectoryAsync(imgDir, { intermediates: true });
-  }
-};
 
 export default function UploadMazeComponent() {
-  const [uploading, setUploading] = useState(false);
-  const [images, setImages] = useState<any[]>([]);
+  const ipAddress = "localhost";
 
-  // Load images on startup.
-  useEffect(() => {
-    loadImages();
-  }, []);
-
-  // Load images from file system.
-  const loadImages = async () => {
-    await ensureDirExists();
-    const files = await FileSystem.readDirectoryAsync(imgDir);
-    if (files.length > 0) {
-      setImages(files.map((f) => imgDir + f));
-    }
-  };
-
-  // Select image from library.
-  const selectImage = async (useLibrary: boolean) => {
-    let result;
-    const options: ImagePicker.ImagePickerOptions = {
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [3, 3],
-      quality: 0.35,
-    };
-
-    if (useLibrary) {
-      result = await ImagePicker.launchImageLibraryAsync(options);
-
-      // Save image if not cancelled.
-      if (!result.canceled) {
-        saveImage(result.assets[0].uri);
-      }
-    }
-  };
-
-  // Save image to file system.
-  const saveImage = async (uri: string) => {
-    await ensureDirExists();
-    const filename = "maze_" + new Date().getTime() + ".jpeg";
-    const dest = imgDir + filename;
-    await FileSystem.copyAsync({ from: uri, to: dest });
-    setImages([...images, dest]);
-  };
-
-  // Upload maze to server.
-  const uploadMaze = async (uri: string) => {
+  const uploadFromTable = async (filename: string, data: string) => {
     try {
       let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
-        signal: controller.signal,
+        method: "post",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          filename: filename,
+          data: data,
+        }),
       });
 
       if (response.status == 200) {
-        setUploading(true);
-
-        await FileSystem.uploadAsync(
-          `http://${ipAddress}:8000/upload.php`,
-          uri,
-          {
-            httpMethod: "POST",
-            uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-            fieldName: "file",
-          }
-        );
-
-        setUploading(false);
-        alert("Maze uploaded :)");
+        setModalVisible(!modalVisible);
+        return response;
       }
     } catch (error) {
       alert(`PHP server is disabled:", ${error}`);
@@ -101,82 +33,98 @@ export default function UploadMazeComponent() {
     }
   };
 
-  // Delete maze from file system.
-  const deleteMaze = async (uri: string) => {
-    await FileSystem.deleteAsync(uri);
-    setImages(images.filter((i) => i !== uri));
-  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mazeName, setMazeName] = useState("");
 
-  // Render image list item.
-  const renderItem = ({ item }: { item: any }) => {
-    return (
-      <View>
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 17,
-            fontWeight: "500",
-          }}
-        >
-          Upload maze:
-        </Text>
-
-        {/* Style upload and delete buttons. */}
-        <View
-          style={{
-            flexDirection: "row",
-            margin: 1,
-            alignItems: "center",
-            gap: 15,
-          }}
-        >
-          {/* <Image style={{ width: 80, height: 80 }} source={{ uri: item }} /> */}
-
-          <Ionicons.Button
-            name="cloud-upload"
-            onPress={() => uploadMaze(item)}
-            style={{ backgroundColor: "#33b249" }}
-          />
-          <Ionicons.Button
-            name="trash"
-            onPress={() => deleteMaze(item)}
-            style={{ backgroundColor: "#ED0800" }}
-          />
-        </View>
-      </View>
-    );
+  let sendMazeName = (mazeName: string) => {
+    // if (mazeName == "") {
+    //   return alert("The name of the maze can't be empty.");
+    // } else {
+    return `${mazeName}.txt`;
+    // }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        // Style save maze button.
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          marginVertical: 27,
-          top: 30,
+    <View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
         }}
       >
-        <Button title="Save maze" onPress={() => selectImage(true)} />
-      </View>
-
-      <FlatList data={images} renderItem={renderItem} />
-
-      {uploading && (
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              backgroundColor: "rgba(0,0,0,0.4)",
-              alignItems: "center",
-              justifyContent: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator color="#fff" animating size="large" />
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Name of the maze:</Text>
+            <TextInput
+              placeholder="maze0"
+              // While I type, I update the name of the maze.
+              onChangeText={(maze) => setMazeName(maze)}
+            />
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => uploadFromTable(sendMazeName(mazeName), "pepe")}
+            >
+              <Text style={styles.textStyle}>Save maze</Text>
+            </Pressable>
+          </View>
         </View>
-      )}
-    </SafeAreaView>
+      </Modal>
+
+      <Pressable
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.textStyle}>Save maze</Text>
+      </Pressable>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+    top: -30,
+  },
+  buttonClose: {
+    top: 10,
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+});
