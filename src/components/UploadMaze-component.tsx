@@ -8,11 +8,12 @@ import {
   View,
   TextInput,
 } from "react-native";
+import { tableData } from "./DrawMaze-compenent";
 
 export default function UploadMazeComponent() {
   const ipAddress = "localhost";
 
-  const uploadFromTable = async (filename: string, data: string) => {
+  const uploadFromTable = async (filename: string, data: string[]) => {
     try {
       let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
         method: "post",
@@ -28,8 +29,7 @@ export default function UploadMazeComponent() {
         return response;
       }
     } catch (error) {
-      alert(`PHP server is disabled:", ${error}`);
-      return;
+      return alert(`PHP server is disabled:", ${error}`);
     }
   };
 
@@ -65,7 +65,8 @@ export default function UploadMazeComponent() {
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => uploadFromTable(sendMazeName(mazeName), "pepe")}
+              // tableData is the data sent when the user draws.
+              onPress={() => uploadFromTable(sendMazeName(mazeName), tableData)}
             >
               <Text style={styles.textStyle}>Save maze</Text>
             </Pressable>
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#edecd8",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: "#339761",
     top: -30,
   },
   buttonClose: {

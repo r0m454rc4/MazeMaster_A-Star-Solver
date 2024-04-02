@@ -27,11 +27,12 @@ export default function OpenMazeComponent() {
 
         // Close the modal (which I use to open the maze.)
         setModalVisible(!modalVisible);
+
+        return res;
       }
     } catch (error) {
       alert(`PHP server is disabled:", ${error}`);
-      setModalVisible(!modalVisible);
-      return;
+      return setModalVisible(!modalVisible);
     }
   };
 

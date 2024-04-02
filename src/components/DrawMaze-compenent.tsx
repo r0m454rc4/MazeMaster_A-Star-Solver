@@ -7,6 +7,9 @@ import {
   Dimensions,
 } from "react-native";
 
+// tableData is a composesn that is used on UploadMaze, where I save the drawed values
+export const tableData: string[] = [];
+
 export default function DrawMazeComponent() {
   const blockPan = useRef(new Animated.ValueXY()).current;
   const pathPan = useRef(new Animated.ValueXY()).current;
@@ -234,8 +237,8 @@ export default function DrawMazeComponent() {
     })
   ).current;
 
-  const table = (rows: number, columns: number) => {
-    const cells = [];
+  const Table = (rows: number, columns: number) => {
+    let cells = [];
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < columns; col++) {
@@ -272,6 +275,8 @@ export default function DrawMazeComponent() {
               ))}
           </View>
         );
+
+        tableData.push(`Row: ${cells[row].key}, Col: ${cells[col].key}`);
       }
     }
 
@@ -280,7 +285,7 @@ export default function DrawMazeComponent() {
 
   return (
     <View style={styles.drawingArea}>
-      <View style={styles.drawingArea}>{table(11, 9)}</View>
+      <View style={styles.drawingArea}>{Table(11, 9)}</View>
 
       <Animated.Image
         // Import image.
