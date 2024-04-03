@@ -7,8 +7,8 @@ import {
   Dimensions,
 } from "react-native";
 
-// tableData is a composesn that is used on UploadMaze, where I save the drawed values
-export const tableData: string[] = [];
+// tableData is a component that is used on UploadMaze, where I save the drawed value, I use a set to prevent duplicated data.
+export const tableData: Set<string> = new Set();
 
 export default function DrawMazeComponent() {
   const blockPan = useRef(new Animated.ValueXY()).current;
@@ -64,6 +64,8 @@ export default function DrawMazeComponent() {
             [blockCellKey]: true,
           }));
 
+          tableData.add(`${blockCellKey}\n`);
+
           return Animated.event([null, { dx: blockPan.x, dy: blockPan.y }], {
             useNativeDriver: false,
           })(
@@ -113,6 +115,8 @@ export default function DrawMazeComponent() {
             ...prevDraggedCells,
             [pathCellKey]: true,
           }));
+
+          tableData.add(`${pathCellKey}\n`);
 
           return Animated.event([null, { dx: pathPan.x, dy: pathPan.y }], {
             useNativeDriver: false,
@@ -164,6 +168,8 @@ export default function DrawMazeComponent() {
             [startCellKey]: true,
           }));
 
+          tableData.add(`${startCellKey}\n`);
+
           return Animated.event([null, { dx: startPan.x, dy: startPan.y }], {
             useNativeDriver: false,
           })(event, gestureState);
@@ -214,6 +220,8 @@ export default function DrawMazeComponent() {
             ...prevDraggedCells,
             [goalCellKey]: true,
           }));
+
+          tableData.add(`${goalCellKey}\n`);
 
           return Animated.event([null, { dx: goalPan.x, dy: goalPan.y }], {
             useNativeDriver: false,
@@ -276,7 +284,7 @@ export default function DrawMazeComponent() {
           </View>
         );
 
-        tableData.push(`Row: ${cells[row].key}, Col: ${cells[col].key}`);
+        // tableData.push(`Row: ${cells[row].key}, Col: ${cells[col].key}`);
       }
     }
 

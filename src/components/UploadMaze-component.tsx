@@ -13,14 +13,17 @@ import { tableData } from "./DrawMaze-compenent";
 export default function UploadMazeComponent() {
   const ipAddress = "localhost";
 
-  const uploadFromTable = async (filename: string, data: string[]) => {
+  const uploadFromTable = async (filename: string, data: Set<string>) => {
+    // Here I transform the set into an array.
+    let arrayData = [...data];
+
     try {
       let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
         method: "post",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
           filename: filename,
-          data: data,
+          data: arrayData,
         }),
       });
 
