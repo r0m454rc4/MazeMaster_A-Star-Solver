@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import DrawMazeComponent from "../../components/DrawMaze-compenent";
+import DrawMazeComponent from "../../components/DrawMaze-component";
 import UploadMazeComponent from "../../components/UploadMaze-component";
 
 export default function HomeScreen() {

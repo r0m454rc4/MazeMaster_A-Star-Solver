@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import OpenMazeComponent from "../../components/OpenMaze-compenent";
+import OpenMazeComponent from "../../components/OpenMaze-component";
 
 export default function TrainAgentScreen() {
   return (

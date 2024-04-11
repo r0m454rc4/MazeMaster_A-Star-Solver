@@ -42,11 +42,6 @@ export default function DrawMazeComponent() {
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // console.log(
-          //   `Block, x: ${gestureState.moveX} dx:(${gestureState.dx}) res:(${
-          //     gestureState.moveX - gestureState.dx
-          //   }), y: ${gestureState.moveY}`
-          // );
           // Calculate row and col based on gesture position of the block relative to the table.
           const blockCol = Math.floor((gestureState.moveX - 50) / 35);
           const blockRow = Math.floor((gestureState.moveY - 150) / 35);
@@ -64,6 +59,7 @@ export default function DrawMazeComponent() {
             [blockCellKey]: true,
           }));
 
+          // Here I add the coordinates of the block to the set.
           tableData.add(`${blockCellKey}\n`);
 
           return Animated.event([null, { dx: blockPan.x, dy: blockPan.y }], {
@@ -103,10 +99,6 @@ export default function DrawMazeComponent() {
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // console.log(
-          //   `Path, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
-          // );
-
           const pathCol = Math.floor((gestureState.moveX - 50) / 35);
           const pathRow = Math.floor((gestureState.moveY - 150) / 35);
 
@@ -150,10 +142,6 @@ export default function DrawMazeComponent() {
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // console.log(
-          //   `Start, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
-          // );
-
           const startCol = Math.floor((gestureState.moveX - 50) / 35);
           const startRow = Math.floor((gestureState.moveY - 150) / 35);
 
@@ -202,10 +190,6 @@ export default function DrawMazeComponent() {
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // console.log(
-          //   `Goal, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
-          // );
-
           const goalCol = Math.floor((gestureState.moveX - 50) / 35);
           const goalRow = Math.floor((gestureState.moveY - 150) / 35);
 
@@ -283,8 +267,6 @@ export default function DrawMazeComponent() {
               ))}
           </View>
         );
-
-        // tableData.push(`Row: ${cells[row].key}, Col: ${cells[col].key}`);
       }
     }
 
@@ -356,7 +338,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   drawingArea: {
-    // width: "83.5%",
     width: Dimensions.get("screen").width / 1.1,
     height: Dimensions.get("screen").height / 1.65,
     borderRadius: 7,

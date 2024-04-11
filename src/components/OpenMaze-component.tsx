@@ -11,29 +11,50 @@ import {
 import * as FileSystem from "expo-file-system";
 
 export default function OpenMazeComponent() {
-  const ipAddress = "192.168.1.144";
+  const ipAddress = "10.20.1.214";
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mazeName, setMazeName] = useState("");
 
   const downloadFromUrl = async (filename: string) => {
-    try {
-      let response = await fetch(`http://${ipAddress}:8000/Mazes/${filename}`);
+    // This is to alert if the user didn't enter a maze to open.
+    if (filename == ".txt") {
+      alert("The name of the maze can't be empty.");
+      // Close the modal (which I use to open the maze).
+      setModalVisible(!modalVisible);
 
-      if (response.status == 200) {
-        let res = await FileSystem.downloadAsync(
-          `http://${ipAddress}:8000/Mazes/${filename}`,
-          FileSystem.documentDirectory + filename
+      return "";
+    } else {
+      try {
+        let response = await fetch(
+          `http://${ipAddress}:8000/Mazes/${filename}`
         );
 
-        openMaze(filename);
-
-        // Close the modal (which I use to open the maze.)
-        setModalVisible(!modalVisible);
-
-        return res;
+        if (response.status == 200) {
+          openMaze(filename);
+          // Reset filename.
+          filename = "";
+          // Close the modal (which I use to open the maze).
+          setModalVisible(!modalVisible);
+        }
+      } catch (error) {
+        return alert(`PHP server is disabled:", ${error}`);
       }
-    } catch (error) {
-      alert(`PHP server is disabled:", ${error}`);
-      return setModalVisible(!modalVisible);
     }
+  };
+
+  const Table = (rows: number, columns: number) => {
+    let cells = [];
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < columns; col++) {
+        cells.push(
+          <View key={`col_${col}_row_${row}`} style={styles.cell}></View>
+        );
+      }
+    }
+
+    return <View style={styles.table}>{cells}</View>;
   };
 
   const openMaze = async (filename: string) => {
@@ -44,19 +65,22 @@ export default function OpenMazeComponent() {
         FileSystem.documentDirectory + filename
       );
 
-      console.log(result);
+      console.log(`Result: ${result}`);
     } catch (error) {
       alert(error);
     }
 
+    // return <View style={styles.centeredView}>{Table(11, 9)}</View>;
     return result;
   };
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [mazeName, setMazeName] = useState("");
-
   let sendMazeName = (mazeName: string) => {
-    return `${mazeName}.txt`;
+    if (mazeName == "") {
+      alert("The name of the maze can't be empty.");
+      return "";
+    } else {
+      return `${mazeName}.txt`;
+    }
   };
 
   return (
@@ -94,6 +118,8 @@ export default function OpenMazeComponent() {
       >
         <Text style={styles.textStyle}>Open maze</Text>
       </Pressable>
+
+      {/* <View style={styles.centeredView}>{Table(11, 9)}</View> */}
     </View>
   );
 }
@@ -107,7 +133,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#edecd8",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -126,7 +152,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: "#339761",
+    top: -15,
   },
   buttonClose: {
     top: 10,
@@ -140,5 +167,25 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+
+  drawingTableAsset: {
+    width: 35,
+    height: 35,
+  },
+
+  table: {
+    top: -40,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: 330,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cell: {
+    width: 35,
+    height: 35,
+    borderWidth: 1,
+    borderColor: "black",
   },
 });

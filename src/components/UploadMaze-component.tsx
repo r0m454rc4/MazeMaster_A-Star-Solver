@@ -8,31 +8,37 @@ import {
   View,
   TextInput,
 } from "react-native";
-import { tableData } from "./DrawMaze-compenent";
+import { tableData } from "./DrawMaze-component";
 
 export default function UploadMazeComponent() {
-  const ipAddress = "localhost";
+  const ipAddress = "10.20.1.214";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.
     let arrayData = [...data];
 
-    try {
-      let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
-        method: "post",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          filename: filename,
-          data: arrayData,
-        }),
-      });
+    if (arrayData.length > 0) {
+      try {
+        let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
+          method: "post",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({
+            filename: filename,
+            data: arrayData,
+          }),
+        });
 
-      if (response.status == 200) {
-        setModalVisible(!modalVisible);
-        return response;
+        if (response.status == 200) {
+          setModalVisible(!modalVisible);
+          return response;
+        }
+      } catch (error) {
+        return alert(`PHP server is disabled:", ${error}`);
       }
-    } catch (error) {
-      return alert(`PHP server is disabled:", ${error}`);
+    } else {
+      alert("You can't upload an empty maze.");
+      setModalVisible(!modalVisible);
+      return;
     }
   };
 
@@ -40,11 +46,12 @@ export default function UploadMazeComponent() {
   const [mazeName, setMazeName] = useState("");
 
   let sendMazeName = (mazeName: string) => {
-    // if (mazeName == "") {
-    //   return alert("The name of the maze can't be empty.");
-    // } else {
-    return `${mazeName}.txt`;
-    // }
+    if (mazeName == "") {
+      alert("The name of the maze can't be empty.");
+      return "";
+    } else {
+      return `${mazeName}.txt`;
+    }
   };
 
   return (
