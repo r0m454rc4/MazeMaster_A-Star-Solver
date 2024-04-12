@@ -10,51 +10,35 @@ import {
 } from "react-native";
 import * as FileSystem from "expo-file-system";
 
-export default function OpenMazeComponent() {
-  const ipAddress = "10.20.1.214";
+import { TableComponent } from "./DrawMaze-component";
 
+export default function OpenMazeComponent() {
+  const ipAddress = "10.20.1.64";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
 
   const downloadFromUrl = async (filename: string) => {
-    // This is to alert if the user didn't enter a maze to open.
-    if (filename == ".txt") {
-      alert("The name of the maze can't be empty.");
-      // Close the modal (which I use to open the maze).
-      setModalVisible(!modalVisible);
+    try {
+      let response = await fetch(`http://${ipAddress}:8000/Mazes/${filename}`);
 
-      return "";
-    } else {
-      try {
-        let response = await fetch(
-          `http://${ipAddress}:8000/Mazes/${filename}`
+      if (response.status == 200) {
+        let res = await FileSystem.downloadAsync(
+          `http://${ipAddress}:8000/Mazes/${filename}`,
+          FileSystem.documentDirectory + filename
         );
+        openMaze(filename);
 
-        if (response.status == 200) {
-          openMaze(filename);
-          // Reset filename.
-          filename = "";
-          // Close the modal (which I use to open the maze).
-          setModalVisible(!modalVisible);
-        }
-      } catch (error) {
-        return alert(`PHP server is disabled:", ${error}`);
+        // Close the modal (which I use to open the maze).
+        setModalVisible(!modalVisible);
+        // Reset filename.
+        filename = "";
+
+        return res;
       }
+    } catch (error) {
+      alert(`PHP server is disabled:", ${error}`);
+      return setModalVisible(!modalVisible);
     }
-  };
-
-  const Table = (rows: number, columns: number) => {
-    let cells = [];
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-        cells.push(
-          <View key={`col_${col}_row_${row}`} style={styles.cell}></View>
-        );
-      }
-    }
-
-    return <View style={styles.table}>{cells}</View>;
   };
 
   const openMaze = async (filename: string) => {
@@ -64,13 +48,11 @@ export default function OpenMazeComponent() {
       result = await FileSystem.readAsStringAsync(
         FileSystem.documentDirectory + filename
       );
-
-      console.log(`Result: ${result}`);
+      console.log(result);
     } catch (error) {
       alert(error);
     }
 
-    // return <View style={styles.centeredView}>{Table(11, 9)}</View>;
     return result;
   };
 
@@ -85,6 +67,7 @@ export default function OpenMazeComponent() {
 
   return (
     <View>
+      {/* <TableComponent  /> */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -118,12 +101,9 @@ export default function OpenMazeComponent() {
       >
         <Text style={styles.textStyle}>Open maze</Text>
       </Pressable>
-
-      {/* <View style={styles.centeredView}>{Table(11, 9)}</View> */}
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -133,7 +113,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#edecd8",
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -153,7 +133,6 @@ const styles = StyleSheet.create({
   },
   buttonOpen: {
     backgroundColor: "#339761",
-    top: -15,
   },
   buttonClose: {
     top: 10,
@@ -167,11 +146,6 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
-  },
-
-  drawingTableAsset: {
-    width: 35,
-    height: 35,
   },
 
   table: {

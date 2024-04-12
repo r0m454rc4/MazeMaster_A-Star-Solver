@@ -11,7 +11,7 @@ import {
 import { tableData } from "./DrawMaze-component";
 
 export default function UploadMazeComponent() {
-  const ipAddress = "10.20.1.214";
+  const ipAddress = "10.20.1.64";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.

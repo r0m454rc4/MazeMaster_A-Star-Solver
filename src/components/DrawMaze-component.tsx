@@ -7,6 +7,55 @@ import {
   Dimensions,
 } from "react-native";
 
+export const TableComponent = (
+  rows: number,
+  columns: number,
+  // This parameter is to get the data drawn using DrawMazeComponent.
+  draggedCells: { [key: string]: boolean }
+) => {
+  let cells = [];
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      const blockCellKey = `block-${row}-${col}`,
+        goalCellKey = `goal-${row}-${col}`,
+        pathCellKey = `path-${row}-${col}`,
+        startCellKey = `start-${row}-${col}`;
+
+      cells.push(
+        <View key={`col_${col}_row_${row}`} style={styles.cell}>
+          {(draggedCells[blockCellKey] && (
+            <Animated.Image
+              source={require("../../assets/images/Block.png")}
+              style={styles.drawingTableAsset}
+            />
+          )) ||
+            (draggedCells[pathCellKey] && (
+              <Animated.Image
+                source={require("../../assets/images/Path.png")}
+                style={styles.drawingTableAsset}
+              />
+            )) ||
+            (draggedCells[startCellKey] && (
+              <Animated.Image
+                source={require("../../assets/images/Start.png")}
+                style={styles.drawingTableAsset}
+              />
+            )) ||
+            (draggedCells[goalCellKey] && (
+              <Animated.Image
+                source={require("../../assets/images/Goal.png")}
+                style={styles.drawingTableAsset}
+              />
+            ))}
+        </View>
+      );
+    }
+  }
+
+  return <View style={styles.table}>{cells}</View>;
+};
+
 // tableData is a component that is used on UploadMaze, where I save the drawed value, I use a set to prevent duplicated data.
 export const tableData: Set<string> = new Set();
 
@@ -229,53 +278,11 @@ export default function DrawMazeComponent() {
     })
   ).current;
 
-  const Table = (rows: number, columns: number) => {
-    let cells = [];
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-        const blockCellKey = `block-${row}-${col}`,
-          goalCellKey = `goal-${row}-${col}`,
-          pathCellKey = `path-${row}-${col}`,
-          startCellKey = `start-${row}-${col}`;
-
-        cells.push(
-          <View key={`col_${col}_row_${row}`} style={styles.cell}>
-            {(draggedCells[blockCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Block.png")}
-                style={styles.drawingTableAsset}
-              />
-            )) ||
-              (draggedCells[pathCellKey] && (
-                <Animated.Image
-                  source={require("../../assets/images/Path.png")}
-                  style={styles.drawingTableAsset}
-                />
-              )) ||
-              (draggedCells[startCellKey] && (
-                <Animated.Image
-                  source={require("../../assets/images/Start.png")}
-                  style={styles.drawingTableAsset}
-                />
-              )) ||
-              (draggedCells[goalCellKey] && (
-                <Animated.Image
-                  source={require("../../assets/images/Goal.png")}
-                  style={styles.drawingTableAsset}
-                />
-              ))}
-          </View>
-        );
-      }
-    }
-
-    return <View style={styles.table}>{cells}</View>;
-  };
-
   return (
     <View style={styles.drawingArea}>
-      <View style={styles.drawingArea}>{Table(11, 9)}</View>
+      <View style={styles.drawingArea}>
+        {TableComponent(11, 9, draggedCells)}
+      </View>
 
       <Animated.Image
         // Import image.
