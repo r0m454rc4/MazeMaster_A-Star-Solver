@@ -10,14 +10,12 @@ import {
 } from "react-native";
 import * as FileSystem from "expo-file-system";
 
-import { TableComponent } from "./DrawMaze-component";
-
 export default function OpenMazeComponent() {
-  const ipAddress = "10.20.1.64";
+  const ipAddress = "172.20.17.80";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
 
-  const downloadFromUrl = async (filename: string) => {
+  const downloadMaze = async (filename: string) => {
     try {
       let response = await fetch(`http://${ipAddress}:8000/Mazes/${filename}`);
 
@@ -48,7 +46,8 @@ export default function OpenMazeComponent() {
       result = await FileSystem.readAsStringAsync(
         FileSystem.documentDirectory + filename
       );
-      console.log(result);
+
+      trainAgent(result);
     } catch (error) {
       alert(error);
     }
@@ -63,6 +62,10 @@ export default function OpenMazeComponent() {
     } else {
       return `${mazeName}.txt`;
     }
+  };
+
+  let trainAgent = (data: string) => {
+    console.log(data);
   };
 
   return (
@@ -87,9 +90,9 @@ export default function OpenMazeComponent() {
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => downloadFromUrl(sendMazeName(mazeName))}
+              onPress={() => downloadMaze(sendMazeName(mazeName))}
             >
-              <Text style={styles.textStyle}>Open maze</Text>
+              <Text style={styles.textStyle}>Train agent</Text>
             </Pressable>
           </View>
         </View>
@@ -104,6 +107,7 @@ export default function OpenMazeComponent() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
