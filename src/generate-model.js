@@ -156,7 +156,6 @@ start-1-2
 start-0-2
 `;
 
-// Define constants for actions
 const UP = 0;
 const RIGHT = 3;
 

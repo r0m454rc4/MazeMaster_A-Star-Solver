@@ -6,55 +6,7 @@ import {
   PanResponder,
   Dimensions,
 } from "react-native";
-
-export const TableComponent = (
-  rows: number,
-  columns: number,
-  // This parameter is to get the data drawn using DrawMazeComponent.
-  draggedCells: { [key: string]: boolean }
-) => {
-  let cells = [];
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      const blockCellKey = `block-${row}-${col}`,
-        goalCellKey = `goal-${row}-${col}`,
-        pathCellKey = `path-${row}-${col}`,
-        startCellKey = `start-${row}-${col}`;
-
-      cells.push(
-        <View key={`col_${col}_row_${row}`} style={styles.cell}>
-          {(draggedCells[blockCellKey] && (
-            <Animated.Image
-              source={require("../../assets/images/Block.png")}
-              style={styles.drawingTableAsset}
-            />
-          )) ||
-            (draggedCells[pathCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Path.png")}
-                style={styles.drawingTableAsset}
-              />
-            )) ||
-            (draggedCells[startCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Start.png")}
-                style={styles.drawingTableAsset}
-              />
-            )) ||
-            (draggedCells[goalCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Goal.png")}
-                style={styles.drawingTableAsset}
-              />
-            ))}
-        </View>
-      );
-    }
-  }
-
-  return <View style={styles.table}>{cells}</View>;
-};
+import { DrawTableComponent } from "./DrawTable-component";
 
 // tableData is a component that is used on UploadMaze, where I save the drawed value, I use a set to prevent duplicated data.
 export const tableData: Set<string> = new Set();
@@ -281,7 +233,7 @@ export default function DrawMazeComponent() {
   return (
     <View style={styles.drawingArea}>
       <View style={styles.drawingArea}>
-        {TableComponent(11, 9, draggedCells)}
+        <DrawTableComponent rows={11} columns={9} draggedCells={draggedCells} />
       </View>
 
       <Animated.Image
@@ -380,28 +332,5 @@ const styles = StyleSheet.create({
     height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "8%",
-  },
-
-  drawingTableAsset: {
-    width: 35,
-    height: 35,
-  },
-
-  table: {
-    top: -40,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: 330,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  row: {
-    flexDirection: "row",
-  },
-  cell: {
-    width: 35,
-    height: 35,
-    borderWidth: 1,
-    borderColor: "black",
   },
 });

@@ -9,11 +9,14 @@ import {
   TextInput,
 } from "react-native";
 import * as FileSystem from "expo-file-system";
+import { DrawTableComponent } from "./DrawTable-component";
 
 export default function OpenMazeComponent() {
-  const ipAddress = "172.20.17.80";
+  const ipAddress = "10.20.1.115";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
+
+  let tableData: { [key: string]: any } = [];
 
   const downloadMaze = async (filename: string) => {
     try {
@@ -24,6 +27,7 @@ export default function OpenMazeComponent() {
           `http://${ipAddress}:8000/Mazes/${filename}`,
           FileSystem.documentDirectory + filename
         );
+
         openMaze(filename);
 
         // Close the modal (which I use to open the maze).
@@ -47,7 +51,9 @@ export default function OpenMazeComponent() {
         FileSystem.documentDirectory + filename
       );
 
-      trainAgent(result);
+      drawTable(result);
+
+      console.log(`TableData: ${tableData}`);
     } catch (error) {
       alert(error);
     }
@@ -64,22 +70,29 @@ export default function OpenMazeComponent() {
     }
   };
 
-  let trainAgent = (data: string) => {
-    console.log(data);
+  let drawTable = (data: string) => {
+    // Remove line breaks.
+    const lines = data.split("\n");
+
+    // Parse the data and return the TableComponent
+    const draggedCells: { [key: string]: boolean } = {};
+
+    lines.forEach((line) => {
+      line.split(",").forEach((item) => {
+        const [row, col, type] = item.split("-");
+        const cellKey = `${type}-${row}-${col}`;
+        draggedCells[cellKey] = true;
+      });
+    });
+
+    // Here I store the dragged cells that will be drawn on the table.
+    // https://www.javascripttutorial.net/object/convert-an-object-to-an-array-in-javascript/.
+    tableData.push(Object.keys(draggedCells));
   };
 
   return (
     <View>
-      {/* <TableComponent  /> */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Maze to open:</Text>
@@ -92,7 +105,7 @@ export default function OpenMazeComponent() {
               style={[styles.button, styles.buttonClose]}
               onPress={() => downloadMaze(sendMazeName(mazeName))}
             >
-              <Text style={styles.textStyle}>Train agent</Text>
+              <Text style={styles.textStyle}>Open maze</Text>
             </Pressable>
           </View>
         </View>
@@ -104,6 +117,16 @@ export default function OpenMazeComponent() {
       >
         <Text style={styles.textStyle}>Open maze</Text>
       </Pressable>
+
+      {/* {tableData && (
+        <View>
+          <DrawTableComponent rows={11} columns={9} draggedCells={tableData} />
+        </View>
+      )} */}
+
+      <View>
+        <DrawTableComponent rows={11} columns={9} draggedCells={tableData} />
+      </View>
     </View>
   );
 }
@@ -150,20 +173,5 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
-  },
-
-  table: {
-    top: -40,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: 330,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  cell: {
-    width: 35,
-    height: 35,
-    borderWidth: 1,
-    borderColor: "black",
   },
 });
