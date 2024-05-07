@@ -7,11 +7,12 @@ import {
   Pressable,
   View,
   TextInput,
+  Dimensions,
 } from "react-native";
 import { tableData } from "./DrawMaze-component";
 
 export default function UploadMazeComponent() {
-  const ipAddress = "10.20.1.115";
+  const ipAddress = "172.20.17.212";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.
@@ -122,6 +123,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
+    width: Dimensions.get("screen").width / 1.1,
     backgroundColor: "#339761",
     top: -30,
   },

@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import {
-  Alert,
   Modal,
   StyleSheet,
   Text,
   Pressable,
   View,
   TextInput,
+  Dimensions,
 } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { DrawTableComponent } from "./DrawTable-component";
 
 export default function OpenMazeComponent() {
-  const ipAddress = "10.20.1.115";
+  const ipAddress = "172.20.17.212";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
 
@@ -92,13 +92,16 @@ export default function OpenMazeComponent() {
 
   return (
     <View>
+      <View style={styles.tableArea}>
+        <DrawTableComponent rows={11} columns={9} draggedCells={tableData} />
+      </View>
+
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Maze to open:</Text>
             <TextInput
               placeholder="maze0"
-              // While I type, I update the name of the maze.
               onChangeText={(maze) => setMazeName(maze)}
             />
             <Pressable
@@ -111,21 +114,13 @@ export default function OpenMazeComponent() {
         </View>
       </Modal>
 
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Open maze</Text>
-      </Pressable>
-
-      {/* {tableData && (
-        <View>
-          <DrawTableComponent rows={11} columns={9} draggedCells={tableData} />
-        </View>
-      )} */}
-
       <View>
-        <DrawTableComponent rows={11} columns={9} draggedCells={tableData} />
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.textStyle}>Open maze</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -162,7 +157,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#339761",
   },
   buttonClose: {
-    top: 10,
     backgroundColor: "#2196F3",
   },
   textStyle: {
@@ -173,5 +167,15 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+  tableArea: {
+    marginTop: -110,
+    width: Dimensions.get("screen").width / 1.1,
+    height: Dimensions.get("screen").height / 1.87,
+    borderRadius: 7,
+    backgroundColor: "orange",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginBottom: 60,
   },
 });
