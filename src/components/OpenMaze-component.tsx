@@ -12,7 +12,7 @@ import * as FileSystem from "expo-file-system";
 import { DrawTableComponent } from "./DrawTable-component";
 
 export default function OpenMazeComponent() {
-  const ipAddress = "172.20.17.212";
+  const ipAddress = "192.168.1.18";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
 
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tableArea: {
-    marginTop: -110,
+    marginTop: -43,
     width: Dimensions.get("screen").width / 1.1,
     height: Dimensions.get("screen").height / 1.87,
     borderRadius: 7,

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   Modal,
   StyleSheet,
   Text,
@@ -11,8 +10,10 @@ import {
 } from "react-native";
 import { tableData } from "./DrawMaze-component";
 
-export default function UploadMazeComponent() {
-  const ipAddress = "172.20.17.212";
+export const UploadMazeComponent: React.FC<{
+  onUploadSuccess: any;
+}> = ({ onUploadSuccess }) => {
+  const ipAddress = "192.168.1.27";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.
@@ -31,15 +32,19 @@ export default function UploadMazeComponent() {
 
         if (response.status == 200) {
           setModalVisible(!modalVisible);
-          return response;
+
+          // This is to clear the table after submiting the button.
+          onUploadSuccess();
+          // Here return the response, and then, I the data of the table.
+          return [response, tableData.clear()];
         }
       } catch (error) {
-        return alert(`PHP server is disabled:", ${error}`);
+        alert(`PHP server is disabled:", ${error}`);
+        return setModalVisible(!modalVisible);
       }
     } else {
       alert("You can't upload an empty maze.");
-      setModalVisible(!modalVisible);
-      return;
+      return setModalVisible(!modalVisible);
     }
   };
 
@@ -57,15 +62,7 @@ export default function UploadMazeComponent() {
 
   return (
     <View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Name of the maze:</Text>
@@ -93,7 +90,7 @@ export default function UploadMazeComponent() {
       </Pressable>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   centeredView: {

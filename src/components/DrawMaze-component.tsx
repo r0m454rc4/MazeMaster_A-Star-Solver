@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -11,7 +11,9 @@ import { DrawTableComponent } from "./DrawTable-component";
 // tableData is a component that is used on UploadMaze, where I save the drawed value, I use a set to prevent duplicated data.
 export const tableData: Set<string> = new Set();
 
-export default function DrawMazeComponent() {
+export const DrawMazeComponent: React.FC<{
+  onUploadSuccess: any;
+}> = ({ onUploadSuccess }) => {
   const blockPan = useRef(new Animated.ValueXY()).current;
   const pathPan = useRef(new Animated.ValueXY()).current;
   const startPan = useRef(new Animated.ValueXY()).current;
@@ -29,9 +31,17 @@ export default function DrawMazeComponent() {
   const maxBottomtDist = Dimensions.get("screen").height / 20,
     maxToptDist = -455;
 
+  // State to manage the dragged cells.
   const [draggedCells, setDraggedCells] = useState<{ [key: string]: boolean }>(
     {}
   );
+
+  // Clean table after submitting save maze button.
+  useEffect(() => {
+    if (onUploadSuccess) {
+      setDraggedCells({});
+    }
+  }, [onUploadSuccess]);
 
   const blockPanResponder = useRef(
     PanResponder.create({
@@ -122,7 +132,7 @@ export default function DrawMazeComponent() {
           dropPositionY = gestureState.moveY;
 
         console.log(
-          `Block released on position x: ${dropPositionX}, y: ${dropPositionY}.`
+          `Path released on position x: ${dropPositionX}, y: ${dropPositionY}.`
         );
 
         Animated.spring(pathPan, {
@@ -170,7 +180,7 @@ export default function DrawMazeComponent() {
           dropPositionY = gestureState.moveY;
 
         console.log(
-          `Block released on position x: ${dropPositionX}, y: ${dropPositionY}.`
+          `Start released on position x: ${dropPositionX}, y: ${dropPositionY}.`
         );
 
         Animated.spring(startPan, {
@@ -219,7 +229,7 @@ export default function DrawMazeComponent() {
           dropPositionY = gestureState.moveY;
 
         console.log(
-          `Block released on position x: ${dropPositionX}, y: ${dropPositionY}.`
+          `Goal released on position x: ${dropPositionX}, y: ${dropPositionY}.`
         );
 
         Animated.spring(goalPan, {
@@ -282,7 +292,7 @@ export default function DrawMazeComponent() {
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
