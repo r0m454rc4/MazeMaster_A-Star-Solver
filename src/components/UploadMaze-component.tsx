@@ -13,7 +13,7 @@ import { tableData } from "./DrawMaze-component";
 export const UploadMazeComponent: React.FC<{
   onUploadSuccess: any;
 }> = ({ onUploadSuccess }) => {
-  const ipAddress = "192.168.1.27";
+  const ipAddress = "172.20.17.192";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.

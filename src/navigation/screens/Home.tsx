@@ -8,6 +8,10 @@ export default function HomeScreen() {
   // State to trigger the resetting of draggedCells
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
+  if (uploadSuccess == true) {
+    setUploadSuccess(false);
+  }
+
   return (
     <View style={styles.container}>
       {/* Clear table after upload maze. */}

@@ -12,7 +12,7 @@ import * as FileSystem from "expo-file-system";
 import { DrawTableComponent } from "./DrawTable-component";
 
 export default function OpenMazeComponent() {
-  const ipAddress = "192.168.1.18";
+  const ipAddress = "172.20.17.192";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
 
