@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import DrawMazeComponent from "../../components/DrawMaze-compenent";
-import UploadMazeComponent from "../../components/UploadMaze-component";
+import { DrawMazeComponent } from "../../components/DrawMaze-component";
+import { UploadMazeComponent } from "../../components/UploadMaze-component";
 
 export default function HomeScreen() {
+  // State to trigger the resetting of draggedCells
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
+  if (uploadSuccess == true) {
+    setUploadSuccess(false);
+  }
+
   return (
     <View style={styles.container}>
-      <DrawMazeComponent />
+      {/* Clear table after upload maze. */}
+      <DrawMazeComponent onUploadSuccess={() => setUploadSuccess(true)} />
 
       <View style={styles.uploadButtons}>
-        <UploadMazeComponent />
+        <UploadMazeComponent onUploadSuccess={() => setUploadSuccess(true)} />
       </View>
     </View>
   );

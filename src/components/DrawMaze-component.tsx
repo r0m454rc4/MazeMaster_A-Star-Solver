@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,28 +6,42 @@ import {
   PanResponder,
   Dimensions,
 } from "react-native";
+import { DrawTableComponent } from "./DrawTable-component";
 
-export default function DrawMazeComponent() {
+// tableData is a component that is used on UploadMaze, where I save the drawed value, I use a set to prevent duplicated data.
+export const tableData: Set<string> = new Set();
+
+export const DrawMazeComponent: React.FC<{
+  onUploadSuccess: any;
+}> = ({ onUploadSuccess }) => {
   const blockPan = useRef(new Animated.ValueXY()).current;
-  const goalPan = useRef(new Animated.ValueXY()).current;
   const pathPan = useRef(new Animated.ValueXY()).current;
   const startPan = useRef(new Animated.ValueXY()).current;
+  const goalPan = useRef(new Animated.ValueXY()).current;
 
   const maxLeftDistBlock = -67,
     maxRightDistBlock = Dimensions.get("screen").width / 1.57;
-  const maxLeftDistGoal = -135,
-    maxRightDistGoal = Dimensions.get("screen").width / 2.097;
-  const maxLeftDistPath = -195,
-    maxRigthDistPath = Dimensions.get("screen").width / 3.05;
-  const maxLeftDistStart = -255,
-    maxRightDistStart = Dimensions.get("screen").width / 5.3;
+  const maxLeftDistPath = -135,
+    maxRigthDistPath = Dimensions.get("screen").width / 2.097;
+  const maxLeftDistStart = -195,
+    maxRightDistStart = Dimensions.get("screen").width / 3.05;
+  const maxLeftDistGoal = -255,
+    maxRightDistGoal = Dimensions.get("screen").width / 5.3;
 
   const maxBottomtDist = Dimensions.get("screen").height / 20,
     maxToptDist = -455;
 
+  // State to manage the dragged cells.
   const [draggedCells, setDraggedCells] = useState<{ [key: string]: boolean }>(
     {}
   );
+
+  // Clean table after submitting save maze button.
+  useEffect(() => {
+    if (onUploadSuccess) {
+      setDraggedCells({});
+    }
+  }, [onUploadSuccess]);
 
   const blockPanResponder = useRef(
     PanResponder.create({
@@ -39,11 +53,6 @@ export default function DrawMazeComponent() {
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // console.log(
-          //   `Block, x: ${gestureState.moveX} dx:(${gestureState.dx}) res:(${
-          //     gestureState.moveX - gestureState.dx
-          //   }), y: ${gestureState.moveY}`
-          // );
           // Calculate row and col based on gesture position of the block relative to the table.
           const blockCol = Math.floor((gestureState.moveX - 50) / 35);
           const blockRow = Math.floor((gestureState.moveY - 150) / 35);
@@ -60,6 +69,9 @@ export default function DrawMazeComponent() {
             ...prevDraggedCells,
             [blockCellKey]: true,
           }));
+
+          // Here I add the coordinates of the block to the set.
+          tableData.add(`${blockCellKey}\n`);
 
           return Animated.event([null, { dx: blockPan.x, dy: blockPan.y }], {
             useNativeDriver: false,
@@ -88,57 +100,6 @@ export default function DrawMazeComponent() {
     })
   ).current;
 
-  const goalPanResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (event, gestureState) => {
-        if (
-          gestureState.dx >= maxLeftDistGoal &&
-          gestureState.dx <= maxRightDistGoal &&
-          gestureState.dy >= maxToptDist &&
-          gestureState.dy <= maxBottomtDist
-        ) {
-          // console.log(
-          //   `Goal, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
-          // );
-
-          const goalCol = Math.floor((gestureState.moveX - 50) / 35);
-          const goalRow = Math.floor((gestureState.moveY - 150) / 35);
-
-          goalPan.setValue({
-            x: gestureState.dx,
-            y: gestureState.dy,
-          });
-
-          // Update the list of dragged cells.
-          const goalCellKey = `goal-${goalRow}-${goalCol}`;
-          setDraggedCells((prevDraggedCells) => ({
-            ...prevDraggedCells,
-            [goalCellKey]: true,
-          }));
-
-          return Animated.event([null, { dx: goalPan.x, dy: goalPan.y }], {
-            useNativeDriver: false,
-          })(event, gestureState);
-        }
-      },
-
-      onPanResponderRelease: (event, gestureState) => {
-        let dropPositionX = gestureState.moveX,
-          dropPositionY = gestureState.moveY;
-
-        console.log(
-          `Block released on position x: ${dropPositionX}, y: ${dropPositionY}.`
-        );
-
-        Animated.spring(goalPan, {
-          toValue: { x: 0, y: 0 },
-          useNativeDriver: false,
-        }).start();
-      },
-    })
-  ).current;
-
   const pathPanResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -149,10 +110,6 @@ export default function DrawMazeComponent() {
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // console.log(
-          //   `Path, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
-          // );
-
           const pathCol = Math.floor((gestureState.moveX - 50) / 35);
           const pathRow = Math.floor((gestureState.moveY - 150) / 35);
 
@@ -161,6 +118,8 @@ export default function DrawMazeComponent() {
             ...prevDraggedCells,
             [pathCellKey]: true,
           }));
+
+          tableData.add(`${pathCellKey}\n`);
 
           return Animated.event([null, { dx: pathPan.x, dy: pathPan.y }], {
             useNativeDriver: false,
@@ -173,7 +132,7 @@ export default function DrawMazeComponent() {
           dropPositionY = gestureState.moveY;
 
         console.log(
-          `Block released on position x: ${dropPositionX}, y: ${dropPositionY}.`
+          `Path released on position x: ${dropPositionX}, y: ${dropPositionY}.`
         );
 
         Animated.spring(pathPan, {
@@ -194,10 +153,6 @@ export default function DrawMazeComponent() {
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // console.log(
-          //   `Start, x: ${gestureState.moveX}, y: ${gestureState.moveY}`
-          // );
-
           const startCol = Math.floor((gestureState.moveX - 50) / 35);
           const startRow = Math.floor((gestureState.moveY - 150) / 35);
 
@@ -212,6 +167,8 @@ export default function DrawMazeComponent() {
             [startCellKey]: true,
           }));
 
+          tableData.add(`${startCellKey}\n`);
+
           return Animated.event([null, { dx: startPan.x, dy: startPan.y }], {
             useNativeDriver: false,
           })(event, gestureState);
@@ -223,7 +180,7 @@ export default function DrawMazeComponent() {
           dropPositionY = gestureState.moveY;
 
         console.log(
-          `Block released on position x: ${dropPositionX}, y: ${dropPositionY}.`
+          `Start released on position x: ${dropPositionX}, y: ${dropPositionY}.`
         );
 
         Animated.spring(startPan, {
@@ -234,78 +191,60 @@ export default function DrawMazeComponent() {
     })
   ).current;
 
-  const Table = (rows: number, columns: number) => {
-    const cells = [];
+  const goalPanResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (event, gestureState) => {
+        if (
+          gestureState.dx >= maxLeftDistGoal &&
+          gestureState.dx <= maxRightDistGoal &&
+          gestureState.dy >= maxToptDist &&
+          gestureState.dy <= maxBottomtDist
+        ) {
+          const goalCol = Math.floor((gestureState.moveX - 50) / 35);
+          const goalRow = Math.floor((gestureState.moveY - 150) / 35);
 
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-        const blockCellKey = `block-${row}-${col}`,
-          goalCellKey = `goal-${row}-${col}`,
-          pathCellKey = `path-${row}-${col}`,
-          startCellKey = `start-${row}-${col}`;
+          goalPan.setValue({
+            x: gestureState.dx,
+            y: gestureState.dy,
+          });
 
-        cells.push(
-          <View key={`col_${col}_row_${row}`} style={styles.cell}>
-            {(draggedCells[blockCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Block.png")}
-                style={styles.drawingTableAsset}
-              />
-            )) ||
-              (draggedCells[goalCellKey] && (
-                <Animated.Image
-                  source={require("../../assets/images/Goal.png")}
-                  style={styles.drawingTableAsset}
-                />
-              )) ||
-              (draggedCells[pathCellKey] && (
-                <Animated.Image
-                  source={require("../../assets/images/Path.png")}
-                  style={styles.drawingTableAsset}
-                />
-              )) ||
-              (draggedCells[startCellKey] && (
-                <Animated.Image
-                  source={require("../../assets/images/Start.png")}
-                  style={styles.drawingTableAsset}
-                />
-              ))}
-          </View>
+          // Update the list of dragged cells.
+          const goalCellKey = `goal-${goalRow}-${goalCol}`;
+          setDraggedCells((prevDraggedCells) => ({
+            ...prevDraggedCells,
+            [goalCellKey]: true,
+          }));
 
-          //  <View key={goalCellKey} style={styles.cell}>
-          // {draggedCells[goalCellKey] && (
-          //   <Animated.Image
-          //     source={require("../../assets/images/Goal.png")}
-          //     style={styles.drawingTableAsset}
-          //   />
-          //   )}
-          // </View>
-          // <View key={pathCellKey} style={styles.cell}>
-          // {draggedCells[pathCellKey] && (
-          //   <Animated.Image
-          //     source={require("../../assets/images/Path.png")}
-          //     style={styles.drawingTableAsset}
-          //   />
-          // )}
-          // </View>
-          // <View key={startCellKey} style={styles.cell}>
-          // {draggedCells[startCellKey] && (
-          //   <Animated.Image
-          //     source={require("../../assets/images/Start.png")}
-          //     style={styles.drawingTableAsset}
-          //   />
-          // )}
-          // </View>
+          tableData.add(`${goalCellKey}\n`);
+
+          return Animated.event([null, { dx: goalPan.x, dy: goalPan.y }], {
+            useNativeDriver: false,
+          })(event, gestureState);
+        }
+      },
+
+      onPanResponderRelease: (event, gestureState) => {
+        let dropPositionX = gestureState.moveX,
+          dropPositionY = gestureState.moveY;
+
+        console.log(
+          `Goal released on position x: ${dropPositionX}, y: ${dropPositionY}.`
         );
-      }
-    }
 
-    return <View style={styles.table}>{cells}</View>;
-  };
+        Animated.spring(goalPan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start();
+      },
+    })
+  ).current;
 
   return (
     <View style={styles.drawingArea}>
-      <View style={styles.drawingArea}>{Table(11, 9)}</View>
+      <View style={styles.drawingArea}>
+        <DrawTableComponent rows={11} columns={9} draggedCells={draggedCells} />
+      </View>
 
       <Animated.Image
         // Import image.
@@ -317,17 +256,6 @@ export default function DrawMazeComponent() {
           },
         ]}
         {...blockPanResponder.panHandlers}
-      />
-
-      <Animated.Image
-        source={require("../../assets/images/Goal.png")}
-        style={[
-          styles.goal,
-          {
-            transform: [{ translateX: goalPan.x }, { translateY: goalPan.y }],
-          },
-        ]}
-        {...goalPanResponder.panHandlers}
       />
 
       <Animated.Image
@@ -351,9 +279,20 @@ export default function DrawMazeComponent() {
         ]}
         {...startPanResponder.panHandlers}
       />
+
+      <Animated.Image
+        source={require("../../assets/images/Goal.png")}
+        style={[
+          styles.goal,
+          {
+            transform: [{ translateX: goalPan.x }, { translateY: goalPan.y }],
+          },
+        ]}
+        {...goalPanResponder.panHandlers}
+      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -368,7 +307,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   drawingArea: {
-    // width: "83.5%",
     width: Dimensions.get("screen").width / 1.1,
     height: Dimensions.get("screen").height / 1.65,
     borderRadius: 7,
@@ -387,45 +325,22 @@ const styles = StyleSheet.create({
     top: Dimensions.get("screen").height / 4,
     left: "-7%",
   },
-  goal: {
+  path: {
     width: 35,
     height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "-2%",
   },
-  path: {
+  start: {
     width: 35,
     height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "3%",
   },
-  start: {
+  goal: {
     width: 35,
     height: 35,
     top: Dimensions.get("screen").height / 4,
     left: "8%",
-  },
-
-  drawingTableAsset: {
-    width: 35,
-    height: 35,
-  },
-
-  table: {
-    top: -40,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: 330,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  row: {
-    flexDirection: "row",
-  },
-  cell: {
-    width: 35,
-    height: 35,
-    borderWidth: 1,
-    borderColor: "black",
   },
 });

@@ -1,182 +1,140 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Button,
-  Image,
-  View,
+  Modal,
   StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
   Text,
-  FlatList,
+  Pressable,
+  View,
+  TextInput,
+  Dimensions,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { tableData } from "./DrawMaze-component";
 
-const imgDir = FileSystem.documentDirectory + "images/";
-// IP address from the computer.
-const ipAddress = "192.168.1.141";
-const controller = new AbortController();
+export const UploadMazeComponent: React.FC<{
+  onUploadSuccess: any;
+}> = ({ onUploadSuccess }) => {
+  const ipAddress = "172.20.17.192";
 
-const ensureDirExists = async () => {
-  const dirInfo = await FileSystem.getInfoAsync(imgDir);
-  if (!dirInfo.exists) {
-    await FileSystem.makeDirectoryAsync(imgDir, { intermediates: true });
-  }
-};
+  const uploadFromTable = async (filename: string, data: Set<string>) => {
+    // Here I transform the set into an array.
+    let arrayData = [...data];
 
-export default function UploadMazeComponent() {
-  const [uploading, setUploading] = useState(false);
-  const [images, setImages] = useState<any[]>([]);
+    if (arrayData.length > 0) {
+      try {
+        let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
+          method: "post",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({
+            filename: filename,
+            data: arrayData,
+          }),
+        });
 
-  // Load images on startup.
-  useEffect(() => {
-    loadImages();
-  }, []);
+        if (response.status == 200) {
+          setModalVisible(!modalVisible);
 
-  // Load images from file system.
-  const loadImages = async () => {
-    await ensureDirExists();
-    const files = await FileSystem.readDirectoryAsync(imgDir);
-    if (files.length > 0) {
-      setImages(files.map((f) => imgDir + f));
-    }
-  };
-
-  // Select image from library.
-  const selectImage = async (useLibrary: boolean) => {
-    let result;
-    const options: ImagePicker.ImagePickerOptions = {
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [3, 3],
-      quality: 0.35,
-    };
-
-    if (useLibrary) {
-      result = await ImagePicker.launchImageLibraryAsync(options);
-
-      // Save image if not cancelled.
-      if (!result.canceled) {
-        saveImage(result.assets[0].uri);
+          // This is to clear the table after submiting the button.
+          onUploadSuccess();
+          // Here return the response, and then, I the data of the table.
+          return [response, tableData.clear()];
+        }
+      } catch (error) {
+        alert(`PHP server is disabled:", ${error}`);
+        return setModalVisible(!modalVisible);
       }
+    } else {
+      alert("You can't upload an empty maze.");
+      return setModalVisible(!modalVisible);
     }
   };
 
-  // Save image to file system.
-  const saveImage = async (uri: string) => {
-    await ensureDirExists();
-    const filename = "maze_" + new Date().getTime() + ".jpeg";
-    const dest = imgDir + filename;
-    await FileSystem.copyAsync({ from: uri, to: dest });
-    setImages([...images, dest]);
-  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mazeName, setMazeName] = useState("");
 
-  // Upload maze to server.
-  const uploadMaze = async (uri: string) => {
-    try {
-      let response = await fetch(`http://${ipAddress}:8000/upload.php`, {
-        signal: controller.signal,
-      });
-
-      if (response.status == 200) {
-        setUploading(true);
-
-        await FileSystem.uploadAsync(
-          `http://${ipAddress}:8000/upload.php`,
-          uri,
-          {
-            httpMethod: "POST",
-            uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-            fieldName: "file",
-          }
-        );
-
-        setUploading(false);
-        alert("Maze uploaded :)");
-      }
-    } catch (error) {
-      alert(`PHP server is disabled:", ${error}`);
-      return;
+  let sendMazeName = (mazeName: string) => {
+    if (mazeName == "") {
+      alert("The name of the maze can't be empty.");
+      return "";
+    } else {
+      return `${mazeName}.txt`;
     }
-  };
-
-  // Delete maze from file system.
-  const deleteMaze = async (uri: string) => {
-    await FileSystem.deleteAsync(uri);
-    setImages(images.filter((i) => i !== uri));
-  };
-
-  // Render image list item.
-  const renderItem = ({ item }: { item: any }) => {
-    return (
-      <View>
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 17,
-            fontWeight: "500",
-          }}
-        >
-          Upload maze:
-        </Text>
-
-        {/* Style upload and delete buttons. */}
-        <View
-          style={{
-            flexDirection: "row",
-            margin: 1,
-            alignItems: "center",
-            gap: 15,
-          }}
-        >
-          {/* <Image style={{ width: 80, height: 80 }} source={{ uri: item }} /> */}
-
-          <Ionicons.Button
-            name="cloud-upload"
-            onPress={() => uploadMaze(item)}
-            style={{ backgroundColor: "#33b249" }}
-          />
-          <Ionicons.Button
-            name="trash"
-            onPress={() => deleteMaze(item)}
-            style={{ backgroundColor: "#ED0800" }}
-          />
-        </View>
-      </View>
-    );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        // Style save maze button.
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          marginVertical: 27,
-          top: 30,
-        }}
-      >
-        <Button title="Save maze" onPress={() => selectImage(true)} />
-      </View>
-
-      <FlatList data={images} renderItem={renderItem} />
-
-      {uploading && (
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              backgroundColor: "rgba(0,0,0,0.4)",
-              alignItems: "center",
-              justifyContent: "center",
-            },
-          ]}
-        >
-          <ActivityIndicator color="#fff" animating size="large" />
+    <View>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Name of the maze:</Text>
+            <TextInput
+              placeholder="maze0"
+              // While I type, I update the name of the maze.
+              onChangeText={(maze) => setMazeName(maze)}
+            />
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              // tableData is the data sent when the user draws.
+              onPress={() => uploadFromTable(sendMazeName(mazeName), tableData)}
+            >
+              <Text style={styles.textStyle}>Save maze</Text>
+            </Pressable>
+          </View>
         </View>
-      )}
-    </SafeAreaView>
+      </Modal>
+
+      <Pressable
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.textStyle}>Save maze</Text>
+      </Pressable>
+    </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#edecd8",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    width: Dimensions.get("screen").width / 1.1,
+    backgroundColor: "#339761",
+    top: -30,
+  },
+  buttonClose: {
+    top: 10,
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+});

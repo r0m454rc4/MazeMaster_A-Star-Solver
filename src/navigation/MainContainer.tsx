@@ -1,8 +1,7 @@
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link } from "expo-router";
 
 import HomeScreen from "./screens/Home";
 import TrainAgentScreen from "./screens/TrainAgent";
