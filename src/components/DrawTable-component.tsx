@@ -45,8 +45,6 @@ export const DrawTableComponent: React.FC<{
     }
   }
 
-  // console.log("Cells:", cells);
-
   return <View style={styles.table}>{cells}</View>;
 };
 

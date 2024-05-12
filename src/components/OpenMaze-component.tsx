@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -53,7 +53,7 @@ export default function OpenMazeComponent() {
         FileSystem.documentDirectory + filename
       );
 
-      parseData(result);
+      drawMaze(result);
     } catch (error) {
       alert(error);
     }
@@ -61,7 +61,7 @@ export default function OpenMazeComponent() {
     return result;
   };
 
-  let parseData = (data: string) => {
+  let drawMaze = (data: string) => {
     // Remove line breaks.
     const lines = data.split("\n");
 
@@ -72,7 +72,7 @@ export default function OpenMazeComponent() {
       line.split(",").forEach((item) => {
         const [type, row, col] = item.split("-");
         const cellKey = `${type}-${row}-${col}`;
-        console.log(`cellKey: ${cellKey}`);
+        // console.log(`cellKey: ${cellKey}`);
 
         draggedCells[cellKey] = true;
       });
@@ -90,10 +90,6 @@ export default function OpenMazeComponent() {
       return `${mazeName}.txt`;
     }
   };
-
-  useEffect(() => {
-    console.log("tableData:", tableData);
-  }, [tableData]);
 
   return (
     <View>
@@ -121,10 +117,10 @@ export default function OpenMazeComponent() {
 
       <View>
         <Pressable
-          style={[styles.button, styles.buttonOpen]}
+          style={[styles.agentButton, styles.agentButtonTrain]}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.textStyle}>Open maze</Text>
+          <Text style={styles.textStyle}>Train agent</Text>
         </Pressable>
       </View>
     </View>
@@ -158,8 +154,13 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
-  buttonOpen: {
-    backgroundColor: "#339761",
+  agentButton: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  agentButtonTrain: {
+    backgroundColor: "#5576cc",
   },
   buttonClose: {
     backgroundColor: "#2196F3",
