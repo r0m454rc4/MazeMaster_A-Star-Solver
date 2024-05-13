@@ -13,7 +13,7 @@ import { tableData } from "./DrawMaze-component";
 export const UploadMazeComponent: React.FC<{
   onUploadSuccess: any;
 }> = ({ onUploadSuccess }) => {
-  const ipAddress = "172.20.17.192";
+  const ipAddress = "172.20.10.4";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.
@@ -35,8 +35,7 @@ export const UploadMazeComponent: React.FC<{
 
           // This is to clear the table after submiting the button.
           onUploadSuccess();
-          // Here return the response, and then, I the data of the table.
-          return [response, tableData.clear()];
+          return response;
         }
       } catch (error) {
         alert(`PHP server is disabled:", ${error}`);
@@ -82,6 +81,16 @@ export const UploadMazeComponent: React.FC<{
         </View>
       </Modal>
 
+      {/* Here I use onUploadSuccess to clean the maze. */}
+      <Pressable
+        style={[styles.button, styles.buttonClean]}
+        onPress={() => {
+          onUploadSuccess();
+        }}
+      >
+        <Text style={styles.textStyle}>Clean maze</Text>
+      </Pressable>
+
       <Pressable
         style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}
@@ -122,7 +131,13 @@ const styles = StyleSheet.create({
   buttonOpen: {
     width: Dimensions.get("screen").width / 1.1,
     backgroundColor: "#339761",
-    top: -30,
+    top: -17,
+  },
+  buttonClean: {
+    width: Dimensions.get("screen").width / 1.1,
+    backgroundColor: "#ff4500",
+
+    top: -23,
   },
   buttonClose: {
     top: 10,
