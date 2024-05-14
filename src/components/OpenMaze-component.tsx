@@ -12,11 +12,13 @@ import * as FileSystem from "expo-file-system";
 import { DrawTableComponent } from "./DrawTable-component";
 
 export default function OpenMazeComponent() {
-  const ipAddress = "172.20.17.192";
+  const ipAddress = "172.20.10.4";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
+  const [tableData, setTableData] = useState<{ [key: string]: any }>({});
 
-  let tableData: { [key: string]: any } = [];
+  // Chonge it to use is as state.
+  // let tableData: { [key: string]: any } = [];
 
   const downloadMaze = async (filename: string) => {
     try {
@@ -51,14 +53,33 @@ export default function OpenMazeComponent() {
         FileSystem.documentDirectory + filename
       );
 
-      drawTable(result);
-
-      console.log(`TableData: ${tableData}`);
+      drawMaze(result);
     } catch (error) {
       alert(error);
     }
 
     return result;
+  };
+
+  let drawMaze = (data: string) => {
+    // Remove line breaks.
+    const lines = data.split("\n");
+
+    // Parse the data and return the TableComponent.
+    const draggedCells: { [key: string]: boolean } = {};
+
+    lines.forEach((line) => {
+      line.split(",").forEach((item) => {
+        const [type, row, col] = item.split("-");
+        const cellKey = `${type}-${row}-${col}`;
+        // console.log(`cellKey: ${cellKey}`);
+
+        draggedCells[cellKey] = true;
+      });
+    });
+
+    // Here I store the dragged cells that will be drawn on the table.
+    setTableData(draggedCells);
   };
 
   let sendMazeName = (mazeName: string) => {
@@ -68,26 +89,6 @@ export default function OpenMazeComponent() {
     } else {
       return `${mazeName}.txt`;
     }
-  };
-
-  let drawTable = (data: string) => {
-    // Remove line breaks.
-    const lines = data.split("\n");
-
-    // Parse the data and return the TableComponent
-    const draggedCells: { [key: string]: boolean } = {};
-
-    lines.forEach((line) => {
-      line.split(",").forEach((item) => {
-        const [row, col, type] = item.split("-");
-        const cellKey = `${type}-${row}-${col}`;
-        draggedCells[cellKey] = true;
-      });
-    });
-
-    // Here I store the dragged cells that will be drawn on the table.
-    // https://www.javascripttutorial.net/object/convert-an-object-to-an-array-in-javascript/.
-    tableData.push(Object.keys(draggedCells));
   };
 
   return (
@@ -116,10 +117,10 @@ export default function OpenMazeComponent() {
 
       <View>
         <Pressable
-          style={[styles.button, styles.buttonOpen]}
+          style={[styles.agentButton, styles.agentButtonTrain]}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.textStyle}>Open maze</Text>
+          <Text style={styles.textStyle}>Train agent</Text>
         </Pressable>
       </View>
     </View>
@@ -153,8 +154,13 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
-  buttonOpen: {
-    backgroundColor: "#339761",
+  agentButton: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  agentButtonTrain: {
+    backgroundColor: "#5576cc",
   },
   buttonClose: {
     backgroundColor: "#2196F3",
@@ -171,11 +177,11 @@ const styles = StyleSheet.create({
   tableArea: {
     marginTop: -43,
     width: Dimensions.get("screen").width / 1.1,
-    height: Dimensions.get("screen").height / 1.87,
+    height: Dimensions.get("screen").height / 1.85,
     borderRadius: 7,
     backgroundColor: "orange",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginBottom: 60,
+    marginBottom: 40,
   },
 });

@@ -5,7 +5,7 @@ export const DrawTableComponent: React.FC<{
   columns: number;
   draggedCells: { [key: string]: boolean };
 }> = ({ rows, columns, draggedCells }) => {
-  let cells = [];
+  let cells: any = [];
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {

@@ -27,11 +27,10 @@ export const DrawMazeComponent: React.FC<{
     maxRightDistStart = Dimensions.get("screen").width / 3.05;
   const maxLeftDistGoal = -255,
     maxRightDistGoal = Dimensions.get("screen").width / 5.3;
-
   const maxBottomtDist = Dimensions.get("screen").height / 20,
     maxToptDist = -455;
 
-  // State to manage the dragged cells.
+  // Manage the dragged cells.
   const [draggedCells, setDraggedCells] = useState<{ [key: string]: boolean }>(
     {}
   );
