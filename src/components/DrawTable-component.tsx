@@ -1,4 +1,4 @@
-import { StyleSheet, View, Animated } from "react-native";
+import { StyleSheet, View, Animated, Dimensions } from "react-native";
 
 export const DrawTableComponent: React.FC<{
   rows: number;
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     top: -40,
     flexDirection: "row",
     flexWrap: "wrap",
-    width: 330,
+    width: Dimensions.get("screen").width / 1.3,
     justifyContent: "center",
     alignItems: "center",
   },
