@@ -279,7 +279,9 @@ export const DrawMazeComponent: React.FC<{
 
           if (
             !(goalRow >= 11 && goalRow <= 13 && goalCol >= 0 && goalCol <= 9) &&
-            !hasBlock && !hasPath && !hasStart
+            !hasBlock &&
+            !hasPath &&
+            !hasStart
           ) {
             console.log(goalCellKey);
 
