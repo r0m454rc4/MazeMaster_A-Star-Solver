@@ -64,13 +64,25 @@ export const DrawMazeComponent: React.FC<{
 
           // Update the list of dragged cells.
           const blockCellKey = `block-${blockRow}-${blockCol}`;
-          setDraggedCells((prevDraggedCells) => ({
-            ...prevDraggedCells,
-            [blockCellKey]: true,
-          }));
 
-          // Here I add the coordinates of the block to the set.
-          tableData.add(`${blockCellKey}\n`);
+          if (
+            !(
+              blockRow >= 11 &&
+              blockRow <= 13 &&
+              blockCol >= 0 &&
+              blockCol <= 9
+            )
+          ) {
+            console.log(blockCellKey);
+
+            setDraggedCells((prevDraggedCells) => ({
+              ...prevDraggedCells,
+              [blockCellKey]: true,
+            }));
+
+            // Here I add the coordinates of the block to the set.
+            tableData.add(`${blockCellKey}\n`);
+          }
 
           return Animated.event([null, { dx: blockPan.x, dy: blockPan.y }], {
             useNativeDriver: false,
@@ -111,14 +123,29 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const pathCol = Math.floor((gestureState.moveX - 50) / 35);
           const pathRow = Math.floor((gestureState.moveY - 150) / 35);
-
           const pathCellKey = `path-${pathRow}-${pathCol}`;
-          setDraggedCells((prevDraggedCells) => ({
-            ...prevDraggedCells,
-            [pathCellKey]: true,
-          }));
 
-          tableData.add(`${pathCellKey}\n`);
+          // Check if there's already a block at the same coordinate.
+          let hasBlock = false;
+          tableData.forEach((cell) => {
+            if (cell.includes(`block-${pathRow}-${pathCol}`)) {
+              hasBlock = true;
+            }
+          });
+
+          if (
+            !(pathRow >= 11 && pathRow <= 13 && pathCol >= 0 && pathCol <= 9) &&
+            !hasBlock
+          ) {
+            console.log(pathCellKey);
+
+            setDraggedCells((prevDraggedCells) => ({
+              ...prevDraggedCells,
+              [pathCellKey]: true,
+            }));
+
+            tableData.add(`${pathCellKey}\n`);
+          }
 
           return Animated.event([null, { dx: pathPan.x, dy: pathPan.y }], {
             useNativeDriver: false,
@@ -154,19 +181,43 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const startCol = Math.floor((gestureState.moveX - 50) / 35);
           const startRow = Math.floor((gestureState.moveY - 150) / 35);
+          const startCellKey = `start-${startRow}-${startCol}`;
 
-          startPan.setValue({
-            x: gestureState.dx,
-            y: gestureState.dy,
+          let hasBlock = false;
+          let hasPath = false;
+
+          tableData.forEach((cell) => {
+            if (cell.includes(`block-${startRow}-${startCol}`)) {
+              hasBlock = true;
+            }
           });
 
-          const startCellKey = `start-${startRow}-${startCol}`;
-          setDraggedCells((prevDraggedCells) => ({
-            ...prevDraggedCells,
-            [startCellKey]: true,
-          }));
+          tableData.forEach((cell) => {
+            if (cell.includes(`path-${startRow}-${startCol}`)) {
+              hasPath = true;
+            }
+          });
 
-          tableData.add(`${startCellKey}\n`);
+          // If there's not a block or a path on the same coordinate.
+          if (
+            !(
+              startRow >= 11 &&
+              startRow <= 13 &&
+              startCol >= 0 &&
+              startCol <= 9
+            ) &&
+            !hasBlock &&
+            !hasPath
+          ) {
+            console.log(startCellKey);
+
+            setDraggedCells((prevDraggedCells) => ({
+              ...prevDraggedCells,
+              [startCellKey]: true,
+            }));
+
+            tableData.add(`${startCellKey}\n`);
+          }
 
           return Animated.event([null, { dx: startPan.x, dy: startPan.y }], {
             useNativeDriver: false,
@@ -202,20 +253,45 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const goalCol = Math.floor((gestureState.moveX - 50) / 35);
           const goalRow = Math.floor((gestureState.moveY - 150) / 35);
+          const goalCellKey = `goal-${goalRow}-${goalCol}`;
 
-          goalPan.setValue({
-            x: gestureState.dx,
-            y: gestureState.dy,
+          let hasBlock = false;
+          let hasPath = false;
+          let hasStart = false;
+
+          tableData.forEach((cell) => {
+            if (cell.includes(`block-${goalRow}-${goalCol}`)) {
+              hasBlock = true;
+            }
           });
 
-          // Update the list of dragged cells.
-          const goalCellKey = `goal-${goalRow}-${goalCol}`;
-          setDraggedCells((prevDraggedCells) => ({
-            ...prevDraggedCells,
-            [goalCellKey]: true,
-          }));
+          tableData.forEach((cell) => {
+            if (cell.includes(`path-${goalRow}-${goalCol}`)) {
+              hasPath = true;
+            }
+          });
 
-          tableData.add(`${goalCellKey}\n`);
+          tableData.forEach((cell) => {
+            if (cell.includes(`start-${goalRow}-${goalCol}`)) {
+              hasStart = true;
+            }
+          });
+
+          if (
+            !(goalRow >= 11 && goalRow <= 13 && goalCol >= 0 && goalCol <= 9) &&
+            !hasBlock &&
+            !hasPath &&
+            !hasStart
+          ) {
+            console.log(goalCellKey);
+
+            setDraggedCells((prevDraggedCells) => ({
+              ...prevDraggedCells,
+              [goalCellKey]: true,
+            }));
+
+            tableData.add(`${goalCellKey}\n`);
+          }
 
           return Animated.event([null, { dx: goalPan.x, dy: goalPan.y }], {
             useNativeDriver: false,
@@ -245,6 +321,7 @@ export const DrawMazeComponent: React.FC<{
         <DrawTableComponent rows={11} columns={9} draggedCells={draggedCells} />
       </View>
 
+      {/* Here I add the images that can be dragged on the table. */}
       <Animated.Image
         // Import image.
         source={require("../../assets/images/Block.png")}
