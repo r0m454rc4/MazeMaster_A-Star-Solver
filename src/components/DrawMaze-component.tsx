@@ -1,3 +1,4 @@
+// DrawMazeComponent.tsx
 import React, { useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -7,7 +8,6 @@ import {
   Dimensions,
 } from "react-native";
 import { DrawTableComponent } from "./DrawTable-component";
-
 // tableData is a component that is used on UploadMaze, where I save the drawed value, I use a set to prevent duplicated data.
 export const tableData: Set<string> = new Set();
 
@@ -127,7 +127,7 @@ export const DrawMazeComponent: React.FC<{
 
           // Check if there's already a block at the same coordinate.
           let hasBlock = false;
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`block-${pathRow}-${pathCol}`)) {
               hasBlock = true;
             }
@@ -186,13 +186,13 @@ export const DrawMazeComponent: React.FC<{
           let hasBlock = false;
           let hasPath = false;
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`block-${startRow}-${startCol}`)) {
               hasBlock = true;
             }
           });
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`path-${startRow}-${startCol}`)) {
               hasPath = true;
             }
@@ -259,19 +259,19 @@ export const DrawMazeComponent: React.FC<{
           let hasPath = false;
           let hasStart = false;
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`block-${goalRow}-${goalCol}`)) {
               hasBlock = true;
             }
           });
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`path-${goalRow}-${goalCol}`)) {
               hasPath = true;
             }
           });
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`start-${goalRow}-${goalCol}`)) {
               hasStart = true;
             }
