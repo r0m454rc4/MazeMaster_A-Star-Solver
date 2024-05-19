@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import HomeScreen from "./screens/Home";
-import TrainAgentScreen from "./screens/TrainAgent";
+import HomeScreen from "./screens/Home-screen";
+import SolveMazeScreen from "./screens/SolveMaze-screen";
 
 // Function to add font icons from https://icons.expo.fyi.
 function TabBarIcon(props: {
@@ -43,7 +43,7 @@ export default function MainContainer() {
           tabBarIcon: ({ color }) => <TabBarIcon name="flash" color={color} />,
           tabBarStyle: styles.tabBarStyle,
         }}
-        component={TrainAgentScreen}
+        component={SolveMazeScreen}
       />
     </Tab.Navigator>
   );

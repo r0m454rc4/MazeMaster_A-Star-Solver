@@ -1,4 +1,6 @@
 // MazeNode.tsx
+// r0m454rc4.
+
 export class MazeNode {
   position: [number, number];
   g: number;

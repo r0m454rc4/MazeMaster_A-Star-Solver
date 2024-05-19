@@ -1,6 +1,9 @@
+// DrawTableComponent.tsx
+// r0m454rc4.
+
 import React from "react";
 import { StyleSheet, View, Animated, Dimensions } from "react-native";
-import { MazeNode } from "./MazeNode"; // Import MazeNode
+import { MazeNode } from "./MazeNode";
 
 type DrawTableComponentProps = {
   rows: number;
@@ -115,6 +118,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4500",
   },
   currentNodeCell: {
-    backgroundColor: "#edecd8",
+    backgroundColor: "orange",
   },
 });

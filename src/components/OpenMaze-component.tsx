@@ -1,5 +1,4 @@
-// OpenMazeComponent.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   StyleSheet,
@@ -21,15 +20,29 @@ type Cell = {
 };
 
 export default function OpenMazeComponent() {
-  const ipAddress = "192.168.1.180";
+  const ipAddress = "192.168.1.181";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
   const [tableData, setTableData] = useState<{ [key: string]: boolean }>({});
+
+  // This part is for A* algorithm.
+  const [isMazeLoaded, setIsMazeLoaded] = useState(false);
   const [numericGrid, setNumericGrid] = useState<number[][]>([]);
   const [path, setPath] = useState<[number, number][]>([]);
   const [openSet, setOpenSet] = useState<MazeNode[]>([]);
   const [closedSet, setClosedSet] = useState<Set<string>>(new Set());
   const [currentNode, setCurrentNode] = useState<MazeNode | null>(null);
+
+  // This is to execute runAStar when the maze is converted to numbers.
+  useEffect(() => {
+    if (isMazeLoaded) {
+      const startNode = findNode(numericGrid, 2);
+      const goalNode = findNode(numericGrid, 3);
+      if (startNode && goalNode) {
+        runAStar(startNode, goalNode);
+      }
+    }
+  }, [isMazeLoaded, numericGrid]);
 
   const downloadMaze = async (filename: string) => {
     try {
@@ -63,7 +76,7 @@ export default function OpenMazeComponent() {
     }
   };
 
-  const drawMaze = (data: string) => {
+  const drawMaze = async (data: string) => {
     const lines = data.trim().split("\n");
     const mazeGrid = lines.map((line) =>
       line.split(",").map((item) => {
@@ -108,14 +121,8 @@ export default function OpenMazeComponent() {
 
     setNumericGrid(numericGrid);
 
-    const startNode = findNode(numericGrid, 2);
-    const goalNode = findNode(numericGrid, 3);
-
-    console.log("Start Node:", startNode, "Goal Node:", goalNode);
-
-    if (startNode && goalNode) {
-      runAStar(startNode, goalNode);
-    }
+    // After converting the maze to numeric, runAStar will execute.
+    setIsMazeLoaded(true);
   };
 
   const findNode = (
@@ -153,7 +160,7 @@ export default function OpenMazeComponent() {
     return neighbors;
   };
 
-  const runAStar = async (start: [number, number], goal: [number, number]) => {
+  const runAStar = (start: [number, number], goal: [number, number]) => {
     const openSet: MazeNode[] = [];
     const closedSet = new Set<string>();
 
@@ -271,7 +278,13 @@ export default function OpenMazeComponent() {
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => downloadMaze(sendMazeName(mazeName))}
+              onPress={() => {
+                downloadMaze(sendMazeName(mazeName)), setTableData({});
+                setPath([]);
+                setOpenSet([]);
+                setNumericGrid([]);
+                setClosedSet(new Set());
+              }}
             >
               <Text style={styles.textStyle}>Open Maze</Text>
             </Pressable>
@@ -280,15 +293,6 @@ export default function OpenMazeComponent() {
       </Modal>
 
       <View>
-        <Pressable
-          style={[styles.button, styles.buttonClean]}
-          onPress={() => {
-            // setTableData({});
-          }}
-        >
-          <Text style={styles.textStyle}>Clean maze</Text>
-        </Pressable>
-
         <Pressable
           style={[styles.solveMazeButton, styles.solveMazeButton]}
           onPress={() => setModalVisible(true)}
@@ -332,12 +336,7 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     backgroundColor: "#5576cc",
-    top: 18,
-  },
-  buttonClean: {
-    width: Dimensions.get("screen").width / 1.1,
-    backgroundColor: "#ff4500",
-    top: 3,
+    top: 10,
   },
   buttonClose: {
     backgroundColor: "#2196F3",

@@ -1,3 +1,6 @@
+// Home.tsx
+// r0m454rc4.
+
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 

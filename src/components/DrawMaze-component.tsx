@@ -1,4 +1,6 @@
 // DrawMazeComponent.tsx
+// r0m454rc4.
+
 import React, { useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -52,15 +54,9 @@ export const DrawMazeComponent: React.FC<{
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // Calculate row and col based on gesture position of the block relative to the table.
+          // Here I calculate the colunm and row position of the block relative to the table.
           const blockCol = Math.floor((gestureState.moveX - 50) / 35);
           const blockRow = Math.floor((gestureState.moveY - 150) / 35);
-
-          // Update the position of the block.
-          blockPan.setValue({
-            x: gestureState.dx,
-            y: gestureState.dy,
-          });
 
           // Update the list of dragged cells.
           const blockCellKey = `block-${blockRow}-${blockCol}`;
