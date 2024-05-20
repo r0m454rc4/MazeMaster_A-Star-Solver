@@ -1,12 +1,47 @@
-import { StyleSheet, View, Animated, Dimensions } from "react-native";
+// DrawTableComponent.tsx
+// r0m454rc4.
 
-export const DrawTableComponent: React.FC<{
+import React from "react";
+import { StyleSheet, View, Animated, Dimensions } from "react-native";
+import { MazeNode } from "../classes/MazeNode";
+
+type DrawTableComponentProps = {
   rows: number;
   columns: number;
   draggedCells: { [key: string]: boolean };
-}> = ({ rows, columns, draggedCells }) => {
-  let cells: any = [];
 
+  // This properties aren't required as they are used to show the path of A*.
+  path?: [number, number][];
+  openSet?: MazeNode[];
+  closedSet?: Set<string>;
+  currentNode?: MazeNode | null;
+};
+
+export const DrawTableComponent: React.FC<DrawTableComponentProps> = (
+  props
+) => {
+  const {
+    rows,
+    columns,
+    draggedCells,
+    path = [],
+    openSet = [],
+    closedSet = new Set(),
+    currentNode = null,
+  } = props;
+
+  const isPath = (row: number, col: number) =>
+    path.some(([r, c]) => r === row && c === col);
+  const isOpenSet = (row: number, col: number) =>
+    openSet.some(
+      (node) => node.position[0] === row && node.position[1] === col
+    );
+  const isClosedSet = (row: number, col: number) =>
+    closedSet.has(`${row},${col}`);
+  const isCurrentNode = (row: number, col: number) =>
+    currentNode?.position[0] === row && currentNode?.position[1] === col;
+
+  let cells: any = [];
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {
       const blockCellKey = `block-${row}-${col}`,
@@ -16,30 +51,35 @@ export const DrawTableComponent: React.FC<{
 
       cells.push(
         <View key={`col_${col}_row_${row}`} style={styles.cell}>
-          {(draggedCells[blockCellKey] && (
+          {isPath(row, col) ? (
+            <View style={[styles.drawingTableAsset, styles.pathCell]} />
+          ) : isOpenSet(row, col) ? (
+            <View style={[styles.drawingTableAsset, styles.openSetCell]} />
+          ) : isClosedSet(row, col) ? (
+            <View style={[styles.drawingTableAsset, styles.closedSetCell]} />
+          ) : isCurrentNode(row, col) ? (
+            <View style={[styles.drawingTableAsset, styles.currentNodeCell]} />
+          ) : draggedCells[blockCellKey] ? (
             <Animated.Image
               source={require("../../assets/images/Block.png")}
               style={styles.drawingTableAsset}
             />
-          )) ||
-            (draggedCells[pathCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Path.png")}
-                style={styles.drawingTableAsset}
-              />
-            )) ||
-            (draggedCells[startCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Start.png")}
-                style={styles.drawingTableAsset}
-              />
-            )) ||
-            (draggedCells[goalCellKey] && (
-              <Animated.Image
-                source={require("../../assets/images/Goal.png")}
-                style={styles.drawingTableAsset}
-              />
-            ))}
+          ) : draggedCells[pathCellKey] ? (
+            <Animated.Image
+              source={require("../../assets/images/Path.png")}
+              style={styles.drawingTableAsset}
+            />
+          ) : draggedCells[startCellKey] ? (
+            <Animated.Image
+              source={require("../../assets/images/Start.png")}
+              style={styles.drawingTableAsset}
+            />
+          ) : draggedCells[goalCellKey] ? (
+            <Animated.Image
+              source={require("../../assets/images/Goal.png")}
+              style={styles.drawingTableAsset}
+            />
+          ) : null}
         </View>
       );
     }
@@ -53,7 +93,6 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
   },
-
   table: {
     top: -40,
     flexDirection: "row",
@@ -70,5 +109,17 @@ const styles = StyleSheet.create({
     height: 35,
     borderWidth: 1,
     borderColor: "black",
+  },
+  pathCell: {
+    backgroundColor: "#5576cc",
+  },
+  openSetCell: {
+    backgroundColor: "#339761",
+  },
+  closedSetCell: {
+    backgroundColor: "#ff4500",
+  },
+  currentNodeCell: {
+    backgroundColor: "orange",
   },
 });

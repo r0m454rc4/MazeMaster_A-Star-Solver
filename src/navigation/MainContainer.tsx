@@ -1,11 +1,13 @@
+// MainContainer.tsx
+// r0m454rc4.
+
 import React from "react";
 import { StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import HomeScreen from "./screens/Home";
-import TrainAgentScreen from "./screens/TrainAgent";
-import RunAgentScreen from "./screens/RunAgent";
+import HomeScreen from "./screens/Home-screen";
+import SolveMazeScreen from "./screens/SolveMaze-screen";
 
 // Function to add font icons from https://icons.expo.fyi.
 function TabBarIcon(props: {
@@ -36,27 +38,15 @@ export default function MainContainer() {
       />
 
       <Tab.Screen
-        name="Train agent"
+        name="Solve maze"
         options={{
           tabBarActiveTintColor: "#795ff0",
           headerStyle: styles.headerStyle,
-          title: "Train agent",
-          tabBarIcon: ({ color }) => <TabBarIcon name="gears" color={color} />,
-          tabBarStyle: styles.tabBarStyle,
-        }}
-        component={TrainAgentScreen}
-      />
-
-      <Tab.Screen
-        name="Run agent"
-        options={{
-          tabBarActiveTintColor: "#795ff0",
-          headerStyle: styles.headerStyle,
-          title: "Execute agent",
+          title: "Solve maze",
           tabBarIcon: ({ color }) => <TabBarIcon name="flash" color={color} />,
           tabBarStyle: styles.tabBarStyle,
         }}
-        component={RunAgentScreen}
+        component={SolveMazeScreen}
       />
     </Tab.Navigator>
   );

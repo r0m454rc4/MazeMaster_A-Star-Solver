@@ -1,3 +1,6 @@
+// DrawMazeComponent.tsx
+// r0m454rc4.
+
 import React, { useRef, useState, useEffect } from "react";
 import {
   StyleSheet,
@@ -7,7 +10,6 @@ import {
   Dimensions,
 } from "react-native";
 import { DrawTableComponent } from "./DrawTable-component";
-
 // tableData is a component that is used on UploadMaze, where I save the drawed value, I use a set to prevent duplicated data.
 export const tableData: Set<string> = new Set();
 
@@ -52,27 +54,16 @@ export const DrawMazeComponent: React.FC<{
           gestureState.dy >= maxToptDist &&
           gestureState.dy <= maxBottomtDist
         ) {
-          // Calculate row and col based on gesture position of the block relative to the table.
+          // Here I calculate the colunm and row position of the block relative to the table.
           const blockCol = Math.floor((gestureState.moveX - 50) / 35);
           const blockRow = Math.floor((gestureState.moveY - 150) / 35);
-
-          // Update the position of the block.
-          blockPan.setValue({
-            x: gestureState.dx,
-            y: gestureState.dy,
-          });
+          const maxLimits =
+            blockRow >= 11 && blockRow <= 13 && blockCol >= 0 && blockCol <= 9;
 
           // Update the list of dragged cells.
           const blockCellKey = `block-${blockRow}-${blockCol}`;
 
-          if (
-            !(
-              blockRow >= 11 &&
-              blockRow <= 13 &&
-              blockCol >= 0 &&
-              blockCol <= 9
-            )
-          ) {
+          if (!maxLimits) {
             console.log(blockCellKey);
 
             setDraggedCells((prevDraggedCells) => ({
@@ -123,20 +114,20 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const pathCol = Math.floor((gestureState.moveX - 50) / 35);
           const pathRow = Math.floor((gestureState.moveY - 150) / 35);
+          const maxLimits =
+            pathRow >= 11 && pathRow <= 13 && pathCol >= 0 && pathCol <= 9;
+
           const pathCellKey = `path-${pathRow}-${pathCol}`;
 
           // Check if there's already a block at the same coordinate.
           let hasBlock = false;
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`block-${pathRow}-${pathCol}`)) {
               hasBlock = true;
             }
           });
 
-          if (
-            !(pathRow >= 11 && pathRow <= 13 && pathCol >= 0 && pathCol <= 9) &&
-            !hasBlock
-          ) {
+          if (!maxLimits && !hasBlock) {
             console.log(pathCellKey);
 
             setDraggedCells((prevDraggedCells) => ({
@@ -181,34 +172,28 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const startCol = Math.floor((gestureState.moveX - 50) / 35);
           const startRow = Math.floor((gestureState.moveY - 150) / 35);
+          const maxLimits =
+            startRow >= 11 && startRow <= 13 && startCol >= 0 && startCol <= 9;
+
           const startCellKey = `start-${startRow}-${startCol}`;
 
           let hasBlock = false;
           let hasPath = false;
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`block-${startRow}-${startCol}`)) {
               hasBlock = true;
             }
           });
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`path-${startRow}-${startCol}`)) {
               hasPath = true;
             }
           });
 
           // If there's not a block or a path on the same coordinate.
-          if (
-            !(
-              startRow >= 11 &&
-              startRow <= 13 &&
-              startCol >= 0 &&
-              startCol <= 9
-            ) &&
-            !hasBlock &&
-            !hasPath
-          ) {
+          if (!maxLimits && !hasBlock && !hasPath) {
             console.log(startCellKey);
 
             setDraggedCells((prevDraggedCells) => ({
@@ -253,36 +238,34 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const goalCol = Math.floor((gestureState.moveX - 50) / 35);
           const goalRow = Math.floor((gestureState.moveY - 150) / 35);
+          const maxLimits =
+            goalRow >= 11 && goalRow <= 13 && goalCol >= 0 && goalCol <= 9;
+
           const goalCellKey = `goal-${goalRow}-${goalCol}`;
 
           let hasBlock = false;
           let hasPath = false;
           let hasStart = false;
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`block-${goalRow}-${goalCol}`)) {
               hasBlock = true;
             }
           });
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`path-${goalRow}-${goalCol}`)) {
               hasPath = true;
             }
           });
 
-          tableData.forEach((cell) => {
+          tableData.forEach((cell: any) => {
             if (cell.includes(`start-${goalRow}-${goalCol}`)) {
               hasStart = true;
             }
           });
 
-          if (
-            !(goalRow >= 11 && goalRow <= 13 && goalCol >= 0 && goalCol <= 9) &&
-            !hasBlock &&
-            !hasPath &&
-            !hasStart
-          ) {
+          if (!maxLimits && !hasBlock && !hasPath && !hasStart) {
             console.log(goalCellKey);
 
             setDraggedCells((prevDraggedCells) => ({

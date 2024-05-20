@@ -1,3 +1,6 @@
+// UploadMazeComponent.tsx
+// r0m454rc4.
+
 import React, { useState } from "react";
 import {
   Modal,
@@ -13,7 +16,7 @@ import { tableData } from "./DrawMaze-component";
 export const UploadMazeComponent: React.FC<{
   onUploadSuccess: any;
 }> = ({ onUploadSuccess }) => {
-  const ipAddress = "192.168.1.53";
+  const ipAddress = "192.168.1.186";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.
@@ -131,13 +134,12 @@ const styles = StyleSheet.create({
   buttonOpen: {
     width: Dimensions.get("screen").width / 1.1,
     backgroundColor: "#339761",
-    top: -17,
+    top: -20,
   },
   buttonClean: {
     width: Dimensions.get("screen").width / 1.1,
     backgroundColor: "#ff4500",
-
-    top: -23,
+    top: -35,
   },
   buttonClose: {
     top: 10,
