@@ -20,7 +20,7 @@ type Cell = {
 };
 
 export const OpenMazeComponent = () => {
-  const ipAddress = "192.168.1.181";
+  const ipAddress = "192.168.1.186";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
   const [tableData, setTableData] = useState<{ [key: string]: boolean }>({});
@@ -175,7 +175,7 @@ export const OpenMazeComponent = () => {
       if (openSet.length === 0) {
         clearInterval(interval);
         alert("No path found!");
-        console.log("Open set is empty, no path found.");
+        // console.log("Open set is empty, no path found.");
         return;
       }
 
@@ -188,13 +188,16 @@ export const OpenMazeComponent = () => {
 
       if (currentNode.position.toString() === goal.toString()) {
         let current: MazeNode | null = currentNode;
+
         while (current) {
           path.push(current.position);
           current = current.parent;
         }
+
         setPath(path.reverse());
         clearInterval(interval);
         found = true;
+
         console.log("Path found:", path);
         return;
       }
@@ -204,9 +207,13 @@ export const OpenMazeComponent = () => {
 
       for (const neighbor of neighbors) {
         const neighborPosStr = neighbor.toString();
+
+        // This is to ignore invalid positions and blocks.
         if (
           closedSet.has(neighborPosStr) ||
-          numericGrid[neighbor[0]][neighbor[1]] === 1
+          // Here I check if it's a block, or it's an invalid position.
+          numericGrid[neighbor[0]][neighbor[1]] == 1 ||
+          numericGrid[neighbor[0]][neighbor[1]] == -1
         ) {
           continue;
         }

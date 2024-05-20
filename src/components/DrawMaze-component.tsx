@@ -57,18 +57,13 @@ export const DrawMazeComponent: React.FC<{
           // Here I calculate the colunm and row position of the block relative to the table.
           const blockCol = Math.floor((gestureState.moveX - 50) / 35);
           const blockRow = Math.floor((gestureState.moveY - 150) / 35);
+          const maxLimits =
+            blockRow >= 11 && blockRow <= 13 && blockCol >= 0 && blockCol <= 9;
 
           // Update the list of dragged cells.
           const blockCellKey = `block-${blockRow}-${blockCol}`;
 
-          if (
-            !(
-              blockRow >= 11 &&
-              blockRow <= 13 &&
-              blockCol >= 0 &&
-              blockCol <= 9
-            )
-          ) {
+          if (!maxLimits) {
             console.log(blockCellKey);
 
             setDraggedCells((prevDraggedCells) => ({
@@ -119,6 +114,9 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const pathCol = Math.floor((gestureState.moveX - 50) / 35);
           const pathRow = Math.floor((gestureState.moveY - 150) / 35);
+          const maxLimits =
+            pathRow >= 11 && pathRow <= 13 && pathCol >= 0 && pathCol <= 9;
+
           const pathCellKey = `path-${pathRow}-${pathCol}`;
 
           // Check if there's already a block at the same coordinate.
@@ -129,10 +127,7 @@ export const DrawMazeComponent: React.FC<{
             }
           });
 
-          if (
-            !(pathRow >= 11 && pathRow <= 13 && pathCol >= 0 && pathCol <= 9) &&
-            !hasBlock
-          ) {
+          if (!maxLimits && !hasBlock) {
             console.log(pathCellKey);
 
             setDraggedCells((prevDraggedCells) => ({
@@ -177,6 +172,9 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const startCol = Math.floor((gestureState.moveX - 50) / 35);
           const startRow = Math.floor((gestureState.moveY - 150) / 35);
+          const maxLimits =
+            startRow >= 11 && startRow <= 13 && startCol >= 0 && startCol <= 9;
+
           const startCellKey = `start-${startRow}-${startCol}`;
 
           let hasBlock = false;
@@ -195,16 +193,7 @@ export const DrawMazeComponent: React.FC<{
           });
 
           // If there's not a block or a path on the same coordinate.
-          if (
-            !(
-              startRow >= 11 &&
-              startRow <= 13 &&
-              startCol >= 0 &&
-              startCol <= 9
-            ) &&
-            !hasBlock &&
-            !hasPath
-          ) {
+          if (!maxLimits && !hasBlock && !hasPath) {
             console.log(startCellKey);
 
             setDraggedCells((prevDraggedCells) => ({
@@ -249,6 +238,9 @@ export const DrawMazeComponent: React.FC<{
         ) {
           const goalCol = Math.floor((gestureState.moveX - 50) / 35);
           const goalRow = Math.floor((gestureState.moveY - 150) / 35);
+          const maxLimits =
+            goalRow >= 11 && goalRow <= 13 && goalCol >= 0 && goalCol <= 9;
+
           const goalCellKey = `goal-${goalRow}-${goalCol}`;
 
           let hasBlock = false;
@@ -273,12 +265,7 @@ export const DrawMazeComponent: React.FC<{
             }
           });
 
-          if (
-            !(goalRow >= 11 && goalRow <= 13 && goalCol >= 0 && goalCol <= 9) &&
-            !hasBlock &&
-            !hasPath &&
-            !hasStart
-          ) {
+          if (!maxLimits && !hasBlock && !hasPath && !hasStart) {
             console.log(goalCellKey);
 
             setDraggedCells((prevDraggedCells) => ({
