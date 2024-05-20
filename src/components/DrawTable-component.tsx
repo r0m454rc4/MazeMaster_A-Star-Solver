@@ -3,12 +3,14 @@
 
 import React from "react";
 import { StyleSheet, View, Animated, Dimensions } from "react-native";
-import { MazeNode } from "./MazeNode";
+import { MazeNode } from "../classes/MazeNode";
 
 type DrawTableComponentProps = {
   rows: number;
   columns: number;
   draggedCells: { [key: string]: boolean };
+
+  // This properties aren't required as they are used to show the path of A*.
   path?: [number, number][];
   openSet?: MazeNode[];
   closedSet?: Set<string>;

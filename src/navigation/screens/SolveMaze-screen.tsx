@@ -3,7 +3,7 @@
 
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import OpenMazeComponent from "../../components/OpenMaze-component";
+import { OpenMazeComponent } from "../../components/OpenMaze-component";
 
 export default function SolveMazeScreen() {
   return (

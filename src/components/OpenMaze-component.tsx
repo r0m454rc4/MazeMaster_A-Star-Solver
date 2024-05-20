@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { DrawTableComponent } from "./DrawTable-component";
-import { MazeNode } from "./MazeNode"; // Import MazeNode
+import { MazeNode } from "../classes/MazeNode";
 
 type CellType = "path" | "block" | "start" | "goal";
 type Cell = {
@@ -19,13 +19,13 @@ type Cell = {
   col: number;
 };
 
-export default function OpenMazeComponent() {
+export const OpenMazeComponent = () => {
   const ipAddress = "192.168.1.181";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
   const [tableData, setTableData] = useState<{ [key: string]: boolean }>({});
 
-  // This part is for A* algorithm.
+  // This part is for A*.
   const [isMazeLoaded, setIsMazeLoaded] = useState(false);
   const [numericGrid, setNumericGrid] = useState<number[][]>([]);
   const [path, setPath] = useState<[number, number][]>([]);
@@ -140,6 +140,7 @@ export default function OpenMazeComponent() {
   };
 
   const heuristic = (a: [number, number], b: [number, number]) => {
+    // In this case, I use the Manhattan method.
     const h = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
     console.log(`Heuristic from ${a} to ${b}:`, h);
     return h;
@@ -156,7 +157,7 @@ export default function OpenMazeComponent() {
     if (x < maze.length - 1) neighbors.push([x + 1, y]);
     if (y > 0) neighbors.push([x, y - 1]);
     if (y < maze[0].length - 1) neighbors.push([x, y + 1]);
-    console.log(`Neighbors of ${node.position}:`, neighbors);
+    // console.log(`Neighbors of ${node.position}:`, neighbors);
     return neighbors;
   };
 
@@ -183,7 +184,7 @@ export default function OpenMazeComponent() {
       closedSet.add(currentNode.position.toString());
       setCurrentNode(currentNode); // Set the current node
 
-      console.log("Current Node:", currentNode);
+      // console.log("Current Node:", currentNode);
 
       if (currentNode.position.toString() === goal.toString()) {
         let current: MazeNode | null = currentNode;
@@ -199,7 +200,7 @@ export default function OpenMazeComponent() {
       }
 
       const neighbors = getNeighbors(currentNode, numericGrid);
-      console.log("Neighbors of current node:", neighbors);
+      // console.log("Neighbors of current node:", neighbors);
 
       for (const neighbor of neighbors) {
         const neighborPosStr = neighbor.toString();
@@ -237,7 +238,7 @@ export default function OpenMazeComponent() {
 
       setOpenSet([...openSet]);
       setClosedSet(new Set(closedSet));
-      console.log("Open Set:", openSet, "Closed Set:", closedSet);
+      // console.log("Open Set:", openSet, "Closed Set:", closedSet);
     }, 100);
 
     if (!found) {
@@ -302,7 +303,7 @@ export default function OpenMazeComponent() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   centeredView: {
