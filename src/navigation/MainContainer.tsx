@@ -29,7 +29,6 @@ export default function MainContainer() {
           // https://stackoverflow.com/questions/45329620/change-navigation-header-background-color
           headerStyle: styles.headerStyle,
           title: "Draw maze",
-          // The color of the icon is defined on Colors.ts
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           // Add style to the nav bar.
           tabBarStyle: styles.tabBarStyle,
