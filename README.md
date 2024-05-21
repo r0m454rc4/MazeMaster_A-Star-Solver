@@ -14,7 +14,6 @@ Welcome to MazeMaster_A-Star-Solver, a React Native app that allows you to draw 
    - [Opening Mazes](#opening-mazes).
    - [A\* Algorithm](#a-algorithm).
    - [Visualization](#visualization).
-   - [YouTube video](#youTube-video).
 3. [Acknowledgements](#acknowledgements).
 
 ## Getting Started
@@ -76,12 +75,6 @@ To get started with MazeMaster_A-Star-Solver, follow these steps:
 ### Visualization
 
 - **Visualization Tools:** MazeMaster_A-Star-Solver provides tools to visualize the maze, the decisions made by the A\* algorithm, and its path through the maze. This helps users understand the algorithm's behavior and the strategies it employs to solve mazes.
-
-## YouTube video
-
-## YouTube video
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/rDdcRLEQbYM" frameborder="0" allowfullscreen></iframe>
 
 ## Acknowledgements
 
