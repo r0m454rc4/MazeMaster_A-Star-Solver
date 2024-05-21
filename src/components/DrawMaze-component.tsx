@@ -40,6 +40,7 @@ export const DrawMazeComponent: React.FC<{
   // Clean table after submitting save maze button.
   useEffect(() => {
     if (onUploadSuccess) {
+      // Here I clear all the data that was os the set.
       setDraggedCells({});
     }
   }, [onUploadSuccess]);

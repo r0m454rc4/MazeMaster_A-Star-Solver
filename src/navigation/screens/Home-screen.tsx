@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     width: "80%",
     backgroundColor: "#f5f6ee",
   },
-
   uploadButtons: {
     marginTop: "125%",
   },
