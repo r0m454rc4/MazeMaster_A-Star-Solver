@@ -66,8 +66,7 @@ export const DrawMazeComponent: React.FC<{
           const blockCellKey = `block-${blockRow}-${blockCol}`;
 
           if (!maxLimits) {
-            console.log(blockCellKey);
-
+            // console.log(blockCellKey);
             setDraggedCells((prevDraggedCells) => ({
               ...prevDraggedCells,
               [blockCellKey]: true,
@@ -79,11 +78,7 @@ export const DrawMazeComponent: React.FC<{
 
           return Animated.event([null, { dx: blockPan.x, dy: blockPan.y }], {
             useNativeDriver: false,
-          })(
-            // Return parameters.
-            event,
-            gestureState
-          );
+          })(event, gestureState);
         }
       },
 
@@ -123,8 +118,7 @@ export const DrawMazeComponent: React.FC<{
           });
 
           if (!maxLimits && !hasBlock) {
-            console.log(pathCellKey);
-
+            // console.log(pathCellKey);
             setDraggedCells((prevDraggedCells) => ({
               ...prevDraggedCells,
               [pathCellKey]: true,
@@ -182,8 +176,7 @@ export const DrawMazeComponent: React.FC<{
 
           // If there's not a block or a path on the same coordinate.
           if (!maxLimits && !hasBlock && !hasPath) {
-            console.log(startCellKey);
-
+            // console.log(startCellKey);
             setDraggedCells((prevDraggedCells) => ({
               ...prevDraggedCells,
               [startCellKey]: true,
@@ -247,8 +240,7 @@ export const DrawMazeComponent: React.FC<{
           });
 
           if (!maxLimits && !hasBlock && !hasPath && !hasStart) {
-            console.log(goalCellKey);
-
+            // console.log(goalCellKey);
             setDraggedCells((prevDraggedCells) => ({
               ...prevDraggedCells,
               [goalCellKey]: true,

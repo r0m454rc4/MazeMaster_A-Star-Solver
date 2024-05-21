@@ -180,6 +180,7 @@ export const OpenMazeComponent = () => {
     const path: [number, number][] = [];
     let found = false;
 
+    // I use an interval of 100ms to be able to show the movements of the algorithm.
     const interval = setInterval(() => {
       if (openSet.length == 0) {
         clearInterval(interval);
@@ -286,7 +287,7 @@ export const OpenMazeComponent = () => {
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Maze to open:</Text>
+            <Text style={styles.modalText}>Maze to solve:</Text>
             <TextInput
               placeholder="maze0"
               onChangeText={setMazeName}
@@ -306,7 +307,7 @@ export const OpenMazeComponent = () => {
                 setClosedSet(new Set());
               }}
             >
-              <Text style={styles.textStyle}>Open Maze</Text>
+              <Text style={styles.textStyle}>Solve maze</Text>
             </Pressable>
           </View>
         </View>
