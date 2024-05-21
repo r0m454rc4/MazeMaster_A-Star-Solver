@@ -79,7 +79,9 @@ To get started with MazeMaster_A-Star-Solver, follow these steps:
 
 ## YouTube video
 
-![MazeMaster_A-Star-Solver - YT Video](https://youtu.be/rDdcRLEQbYM)
+## YouTube video
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rDdcRLEQbYM" frameborder="0" allowfullscreen></iframe>
 
 ## Acknowledgements
 
