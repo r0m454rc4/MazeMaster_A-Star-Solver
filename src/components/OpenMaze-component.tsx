@@ -21,7 +21,7 @@ type Cell = {
 };
 
 export const OpenMazeComponent = () => {
-  const ipAddress = "172.20.17.66";
+  const ipAddress = "YOUR_IP_ADDRESS";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
   const [tableData, setTableData] = useState<{ [key: string]: boolean }>({});
