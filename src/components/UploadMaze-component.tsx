@@ -16,7 +16,7 @@ import { tableData } from "./DrawMaze-component";
 export const UploadMazeComponent: React.FC<{
   onUploadSuccess: any;
 }> = ({ onUploadSuccess }) => {
-  const ipAddress = "192.168.1.54";
+  const ipAddress = "YOUR_IP_ADDRESS";
 
   const uploadFromTable = async (filename: string, data: Set<string>) => {
     // Here I transform the set into an array.
@@ -37,8 +37,9 @@ export const UploadMazeComponent: React.FC<{
           setModalVisible(!modalVisible);
 
           // This is to clear the table (graphical table and set) after saving the maze.
-          tableData.clear()
+          tableData.clear();
           onUploadSuccess();
+
           return response;
         }
       } catch (error) {

@@ -20,7 +20,7 @@ type Cell = {
 };
 
 export const OpenMazeComponent = () => {
-  const ipAddress = "192.168.1.54";
+  const ipAddress = "YOUR_IP_ADDRESS";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
   const [tableData, setTableData] = useState<{ [key: string]: boolean }>({});
@@ -49,14 +49,17 @@ export const OpenMazeComponent = () => {
       const response = await fetch(
         `http://${ipAddress}:8000/Mazes/${filename}`
       );
+
       if (response.status === 200) {
         const res = await FileSystem.downloadAsync(
           `http://${ipAddress}:8000/Mazes/${filename}`,
           FileSystem.documentDirectory + filename
         );
+
         openMaze(filename);
         setModalVisible(false);
         setMazeName("");
+
         return res;
       }
     } catch (error) {
@@ -70,6 +73,7 @@ export const OpenMazeComponent = () => {
       const result = await FileSystem.readAsStringAsync(
         FileSystem.documentDirectory + filename
       );
+
       drawMaze(result);
     } catch (error) {
       alert(`Error reading the file: ${error}`);
@@ -78,6 +82,7 @@ export const OpenMazeComponent = () => {
 
   const drawMaze = async (data: string) => {
     const lines = data.trim().split("\n");
+
     const mazeGrid = lines.map((line) =>
       line.split(",").map((item) => {
         const [type, row, col] = item.split("-");
@@ -92,6 +97,7 @@ export const OpenMazeComponent = () => {
     console.log("Parsed maze grid:", mazeGrid);
 
     const draggedCells: { [key: string]: boolean } = {};
+
     mazeGrid.forEach((row) => {
       row.forEach((cell) => {
         const cellKey = `${cell.type}-${cell.row}-${cell.col}`;
@@ -117,7 +123,7 @@ export const OpenMazeComponent = () => {
       });
     });
 
-    console.log("Numeric Grid:", numericGrid);
+    // console.log("Numeric Grid:", numericGrid);
 
     setNumericGrid(numericGrid);
 
@@ -143,6 +149,7 @@ export const OpenMazeComponent = () => {
     // In this case, I use the Manhattan method.
     const h = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
     console.log(`Heuristic from ${a} to ${b}:`, h);
+
     return h;
   };
 
@@ -158,6 +165,7 @@ export const OpenMazeComponent = () => {
     if (y > 0) neighbors.push([x, y - 1]);
     if (y < maze[0].length - 1) neighbors.push([x, y + 1]);
     // console.log(`Neighbors of ${node.position}:`, neighbors);
+
     return neighbors;
   };
 
@@ -176,6 +184,7 @@ export const OpenMazeComponent = () => {
         clearInterval(interval);
         alert("No path found!");
         // console.log("Open set is empty, no path found.");
+
         return;
       }
 
@@ -199,6 +208,7 @@ export const OpenMazeComponent = () => {
         found = true;
 
         console.log("Path found:", path);
+
         return;
       }
 
@@ -235,10 +245,11 @@ export const OpenMazeComponent = () => {
             existingNode.h = h;
             existingNode.f = f;
             existingNode.parent = currentNode;
-            console.log(
-              "Updating existing neighbor in open set:",
-              existingNode
-            );
+
+            // console.log(
+            //   "Updating existing neighbor in open set:",
+            //   existingNode
+            // );
           }
         }
       }
@@ -257,8 +268,9 @@ export const OpenMazeComponent = () => {
     if (mazeName === "") {
       alert("The name of the maze can't be empty.");
       return "";
+    } else {
+      return `${mazeName}.txt`;
     }
-    return `${mazeName}.txt`;
   };
 
   return (
