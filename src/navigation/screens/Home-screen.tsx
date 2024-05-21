@@ -8,7 +8,7 @@ import { DrawMazeComponent } from "../../components/DrawMaze-component";
 import { UploadMazeComponent } from "../../components/UploadMaze-component";
 
 export default function HomeScreen() {
-  // State to trigger the resetting of draggedCells
+  // State to trigger the resetting of draggedCells.
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   if (uploadSuccess == true) {

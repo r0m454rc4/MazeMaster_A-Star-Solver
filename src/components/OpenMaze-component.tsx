@@ -12,6 +12,7 @@ import * as FileSystem from "expo-file-system";
 import { DrawTableComponent } from "./DrawTable-component";
 import { MazeNode } from "../classes/MazeNode";
 
+// Here I say the types a cell can be.
 type CellType = "path" | "block" | "start" | "goal";
 type Cell = {
   type: CellType;
@@ -20,7 +21,7 @@ type Cell = {
 };
 
 export const OpenMazeComponent = () => {
-  const ipAddress = "YOUR_IP_ADDRESS";
+  const ipAddress = "172.20.17.66";
   const [modalVisible, setModalVisible] = useState(false);
   const [mazeName, setMazeName] = useState("");
   const [tableData, setTableData] = useState<{ [key: string]: boolean }>({});
@@ -50,7 +51,7 @@ export const OpenMazeComponent = () => {
         `http://${ipAddress}:8000/Mazes/${filename}`
       );
 
-      if (response.status === 200) {
+      if (response.status == 200) {
         const res = await FileSystem.downloadAsync(
           `http://${ipAddress}:8000/Mazes/${filename}`,
           FileSystem.documentDirectory + filename
@@ -93,8 +94,7 @@ export const OpenMazeComponent = () => {
         };
       })
     );
-
-    console.log("Parsed maze grid:", mazeGrid);
+    // console.log("Parsed maze grid:", mazeGrid);
 
     const draggedCells: { [key: string]: boolean } = {};
 
@@ -109,6 +109,7 @@ export const OpenMazeComponent = () => {
     convertMazeToNumeric(mazeGrid);
   };
 
+  // Here I convert the maze to a numeric shape.
   const convertMazeToNumeric = (mazeGrid: Cell[][]) => {
     const numericGrid = Array.from({ length: 11 }, () => Array(9).fill(-1));
 
@@ -122,7 +123,6 @@ export const OpenMazeComponent = () => {
         }[type];
       });
     });
-
     // console.log("Numeric Grid:", numericGrid);
 
     setNumericGrid(numericGrid);
@@ -137,11 +137,12 @@ export const OpenMazeComponent = () => {
   ): [number, number] | null => {
     for (let i = 0; i < maze.length; i++) {
       for (let j = 0; j < maze[i].length; j++) {
-        if (maze[i][j] === value) {
+        if (maze[i][j] == value) {
           return [i, j];
         }
       }
     }
+
     return null;
   };
 
@@ -154,7 +155,7 @@ export const OpenMazeComponent = () => {
   };
 
   const getNeighbors = (node: MazeNode, maze: number[][]) => {
-    if (!maze || maze.length === 0 || maze[0].length === 0) {
+    if (!maze || maze.length == 0 || maze[0].length == 0) {
       return [];
     }
 
@@ -180,7 +181,7 @@ export const OpenMazeComponent = () => {
     let found = false;
 
     const interval = setInterval(() => {
-      if (openSet.length === 0) {
+      if (openSet.length == 0) {
         clearInterval(interval);
         alert("No path found!");
         // console.log("Open set is empty, no path found.");
@@ -191,11 +192,11 @@ export const OpenMazeComponent = () => {
       openSet.sort((a, b) => a.f - b.f);
       const currentNode = openSet.shift()!;
       closedSet.add(currentNode.position.toString());
-      setCurrentNode(currentNode); // Set the current node
-
+      setCurrentNode(currentNode); // Set the current node.
       // console.log("Current Node:", currentNode);
 
-      if (currentNode.position.toString() === goal.toString()) {
+      // Here I check if the current position is the goal.
+      if (currentNode.position.toString() == goal.toString()) {
         let current: MazeNode | null = currentNode;
 
         while (current) {
@@ -232,24 +233,19 @@ export const OpenMazeComponent = () => {
         const h = heuristic(neighbor, goal);
         const f = g + h;
         const existingNode = openSet.find(
-          (node) => node.position.toString() === neighborPosStr
+          (node) => node.position.toString() == neighborPosStr
         );
 
         if (!existingNode || g < existingNode.g) {
           const neighborNode = new MazeNode(neighbor, g, h, f, currentNode);
           if (!existingNode) {
             openSet.push(neighborNode);
-            console.log("Adding neighbor to open set:", neighborNode);
+            // console.log("Adding neighbor to open set:", neighborNode);
           } else {
             existingNode.g = g;
             existingNode.h = h;
             existingNode.f = f;
             existingNode.parent = currentNode;
-
-            // console.log(
-            //   "Updating existing neighbor in open set:",
-            //   existingNode
-            // );
           }
         }
       }
@@ -265,7 +261,7 @@ export const OpenMazeComponent = () => {
   };
 
   const sendMazeName = (mazeName: string) => {
-    if (mazeName === "") {
+    if (mazeName == "") {
       alert("The name of the maze can't be empty.");
       return "";
     } else {
@@ -299,7 +295,11 @@ export const OpenMazeComponent = () => {
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
-                downloadMaze(sendMazeName(mazeName)), setTableData({});
+                // Open maze.
+                downloadMaze(sendMazeName(mazeName));
+
+                // Here I clear the table.
+                setTableData({});
                 setPath([]);
                 setOpenSet([]);
                 setNumericGrid([]);

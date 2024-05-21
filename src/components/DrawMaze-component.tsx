@@ -37,11 +37,12 @@ export const DrawMazeComponent: React.FC<{
     {}
   );
 
-  // Clean table after submitting save maze button.
+  // Crear table after submitting save maze button.
   useEffect(() => {
     if (onUploadSuccess) {
       // Here I clear all the data that was os the set.
       setDraggedCells({});
+      tableData.clear();
     }
   }, [onUploadSuccess]);
 
@@ -87,14 +88,7 @@ export const DrawMazeComponent: React.FC<{
       },
 
       // This is to return to the initial position after releasing.
-      onPanResponderRelease: (event, gestureState) => {
-        let dropPositionX = gestureState.moveX,
-          dropPositionY = gestureState.moveY;
-
-        console.log(
-          `Block released on position x: ${dropPositionX}, y: ${dropPositionY}.`
-        );
-
+      onPanResponderRelease: () => {
         Animated.spring(blockPan, {
           toValue: { x: 0, y: 0 },
           useNativeDriver: false,
@@ -145,14 +139,7 @@ export const DrawMazeComponent: React.FC<{
         }
       },
 
-      onPanResponderRelease: (event, gestureState) => {
-        let dropPositionX = gestureState.moveX,
-          dropPositionY = gestureState.moveY;
-
-        console.log(
-          `Path released on position x: ${dropPositionX}, y: ${dropPositionY}.`
-        );
-
+      onPanResponderRelease: () => {
         Animated.spring(pathPan, {
           toValue: { x: 0, y: 0 },
           useNativeDriver: false,
@@ -211,14 +198,7 @@ export const DrawMazeComponent: React.FC<{
         }
       },
 
-      onPanResponderRelease: (event, gestureState) => {
-        let dropPositionX = gestureState.moveX,
-          dropPositionY = gestureState.moveY;
-
-        console.log(
-          `Start released on position x: ${dropPositionX}, y: ${dropPositionY}.`
-        );
-
+      onPanResponderRelease: () => {
         Animated.spring(startPan, {
           toValue: { x: 0, y: 0 },
           useNativeDriver: false,
@@ -283,14 +263,7 @@ export const DrawMazeComponent: React.FC<{
         }
       },
 
-      onPanResponderRelease: (event, gestureState) => {
-        let dropPositionX = gestureState.moveX,
-          dropPositionY = gestureState.moveY;
-
-        console.log(
-          `Goal released on position x: ${dropPositionX}, y: ${dropPositionY}.`
-        );
-
+      onPanResponderRelease: () => {
         Animated.spring(goalPan, {
           toValue: { x: 0, y: 0 },
           useNativeDriver: false,

@@ -30,18 +30,18 @@ export const DrawTableComponent: React.FC<DrawTableComponentProps> = (
     currentNode = null,
   } = props;
 
+  // This constants are used to show the movements of the A* algorithm.
   const isPath = (row: number, col: number) =>
-    path.some(([r, c]) => r === row && c === col);
+    path.some(([r, c]) => r == row && c == col);
   const isOpenSet = (row: number, col: number) =>
-    openSet.some(
-      (node) => node.position[0] === row && node.position[1] === col
-    );
+    openSet.some((node) => node.position[0] == row && node.position[1] == col);
   const isClosedSet = (row: number, col: number) =>
     closedSet.has(`${row},${col}`);
   const isCurrentNode = (row: number, col: number) =>
-    currentNode?.position[0] === row && currentNode?.position[1] === col;
+    currentNode?.position[0] == row && currentNode?.position[1] == col;
 
-  let cells: any = [];
+  const cells: any = [];
+
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {
       const blockCellKey = `block-${row}-${col}`,
@@ -60,6 +60,7 @@ export const DrawTableComponent: React.FC<DrawTableComponentProps> = (
           ) : isCurrentNode(row, col) ? (
             <View style={[styles.drawingTableAsset, styles.currentNodeCell]} />
           ) : draggedCells[blockCellKey] ? (
+            // This is to draw the image on the table, whether the table is opened or being drawn.
             <Animated.Image
               source={require("../../assets/images/Block.png")}
               style={styles.drawingTableAsset}
